@@ -1,0 +1,21 @@
+
+Livrable 1 : Vérification expérimentale de la relation linéaire entre perturbation de température potentielle à la tropopause et perturbation de hauteur de la tropopause.
+
+Cette relation est démontrée dans l'article de Juckes (1994), équation (3.9), et reprise dans l'article de Wirth et al. (1997), équation (2). En vous appuyant sur un jeu de données issu du modèle opérationnel ARPEGE, vous conduirez une étude statistique sur la validité de cette relation. Les données vous seront fournies au format NetCDF (http://www.unidata.ucar.edu/software/netcdf).
+
+Pour visualiser rapidement ces données, vous pourrez utiliser le logiciel ncview (http://meteora.ucsd.edu/~pierce/ncview_home_page.html). Cependant, pour une meilleur visualisation et un traitement plus avancé, vous pourrez utiliser les logiciels gratuits NCL (http://ncl.ucar.edu) ou PANOPLY (http://www.giss.nasa.gov/tools/panoply). Il est aussi possible d'utiliser Matlab, qui peut désormais lire du NetCDF (https://fr.mathworks.com/help/matlab/ref/netcdf.html).
+
+Livrable 2 : Construction d'un modèle stable de filament stratosphérique.
+
+En vous basant sur les équations (3), (4), (7) et (9) de l'article de Wirth et al. (1997), vous construirez un modèle numérique de la dynamique de la tropopause. Ce modèle devra utiliser une méthode spectrale pour estimer les dérivées spatiales de l'équation (7), et un schéma temporel semi-lagrangien pour l'équation (9). L'article de Staniforth et Côté (1991) pourra vous aider dans la compréhension de ce type de schéma. L'article de Vana et al. (2008) vous permettra éventuellement d'introduire une diffusion dans ce schéma.
+
+Le choix du langage de programmation est laissé libre. Les sorties du modèle devront être stockées au format NetCDF. Il sera nécessaire de vérifier la stabilité du modèle jusqu'à une échéance de 48h.
+
+Livrable 3, optionnel : Construction d'un modèle de simulation des images satellitaires de vapeur d'eau
+
+En vous basant sur les équations (15) à (19) de l'article de Wirth et al. (1997) ainsi que sur le modèle de filament stratosphérique précédemment validé, vous construirez un modèle de simulation des images satellitaires de vapeur d'eau.
+
+Des animations pourront être réalisées à partir des sorties de ces deux modèles.
+
+Pour vous aider à comprendre les équations de la météorologie, vous disposez du livre "Fondamentaux de la météorologie : à l'école du temps", de Sylvie Malardel. Cependant, le but de ce projet n'est pas de vous former en météorologie, et nous vous conseillons de ne pas y passer trop de temps.
+
