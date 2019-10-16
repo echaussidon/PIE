@@ -11,7 +11,7 @@ Contenu :
 * Juckes : Vérification expérimentale de la relation linéaire entre perturbation de température potentielle à la tropopause et perturbation de hauteur de la tropopause
 
 
-Auteur :
+Auteurs :
 --------
 
 Edmond CHAUSSIDON -- Leo COTTELEER -- Florian HULIN -- Victor NGAUV -- Augustin TOMMASINI
