@@ -10,8 +10,10 @@ Contenu :
 
 * Juckes : Vérification expérimentale de la relation linéaire entre perturbation de température potentielle à la tropopause et perturbation de hauteur de la tropopause
 
+* Wirth : Construction d'un modèle stable de filament stratosphérique.
+
 
 Auteurs :
 --------
 
-Edmond CHAUSSIDON -- Leo COTTELEER -- Florian HULIN -- Victor NGAUV -- Augustin TOMMASINI
+Edmond CHAUSSIDON -- Leo COTTELEER -- Florian HULIN -- Victor NGAUV -- Augustin TOMMASINI -- Jan VAN DEN BERGHE
