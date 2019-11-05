@@ -1,5 +1,5 @@
-# Package require :
+# Requirements:
 
-1. matplotlib et basemap
+1. matplotlib et cartopy
 
 2. netCDF4
