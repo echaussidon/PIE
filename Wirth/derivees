@@ -1,0 +1,3 @@
+import numpy as np
+
+# ce code calcule les vitesses u et v partant des valeurs de theta (méthode spectrale)
