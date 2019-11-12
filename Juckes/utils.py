@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import cartopy as cartopy
 import cartopy.crs as crs
 
-def plot(long, lat, data, label="label=''", title='', show=True, save=False, savename='blabbla'):
+def plot(long, lat, data, label="label=''", title='', save=False, savename='blabbla', show=True):
     plt.figure(figsize=(8,6))
 
     ax = plt.axes(projection=crs.PlateCarree())
@@ -22,7 +22,7 @@ def plot(long, lat, data, label="label=''", title='', show=True, save=False, sav
     if show:
         plt.show()
 
-def plot_2(long, lat, data1, data2, label1="label1=''", label2="label2=''", title='', show=True, save=False, savename='blabblaaa'):
+def plot_2(long, lat, data1, data2, label1="label1=''", label2="label2=''", title='', save=False, savename='blabblaaa', show=True):
     plt.figure(figsize=(7.5,7.8))
 
     ax1 = plt.subplot(2, 1, 1, projection=crs.PlateCarree())
@@ -32,7 +32,7 @@ def plot_2(long, lat, data1, data2, label1="label1=''", label2="label2=''", titl
     cbar1.ax.set_xlabel(label1)
     ax1.add_feature(cartopy.feature.COASTLINE)
     ax1.add_feature(cartopy.feature.BORDERS, linestyle=':', alpha=0.5)
-    plt.title(title )
+    plt.title(title, style='italic', y=1.05)
 
     ax2 = plt.subplot(2, 1, 2, projection=crs.PlateCarree())
     fig2 = ax2.contourf(long[:], lat[:], data2[:,:], 80, transform=crs.PlateCarree(), cmap=plt.cm.viridis)
