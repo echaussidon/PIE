@@ -1,1 +1,3 @@
-vitesses.py calcule les vitesses u et v si theta est connu. (pas complète)
+vitesses.py calcule les dérivées en utilisant la transformation de Fourier. Base pour calcul de u et v.
+
+main.py contient la structure globale pour la simulation.
