@@ -65,10 +65,21 @@ for i in range(Nx):
 ###########################
 # initialisation de theta #
 ###########################
-theta = np.zeros((Nx,Ny))                                   # les inconnues à instant t
-for i in range(Nx):
-    for j in range(Ny):
-        theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
+def theta_initialization(k):
+    """Initialisation de la température
+    i=1: sinusoïdale
+    i=2: 
+    """
+    theta = np.zeros((Nx,Ny))                                   # les inconnues à l'instant t
+    for i in range(Nx):
+        for j in range(Ny):
+            if(k==1):
+                theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
+            #elif(i==2):       
+
+    return theta 
+        
+theta = theta_initialization(1)
 thetatp1 = np.copy(theta)                                   # les inconnues à instant t+dt (à calculer dans la boucle)
 Theta = np.zeros((Nx,Ny))                                   # stockage pour transformation de Fourier
 ThetaV = np.zeros((Nx,Ny))                                  # stockage pour transformation de Fourier
