@@ -1,0 +1,7 @@
+- Sauver les données toutes les 6 heures (ou par un paramètre choisi par l'utilisateur).
+- Regarder spectre pour voir l'influence de la diffusion: le plus plat possible vers petites échelles, on ne veut pas de resaut.
+- maillage: prenez une taille en puissance de 2, c'est plus rapide pour la fft.
+  Plus de points en une direction car le domain est plus élongé dans une direction.
+  La taille dans l'article est bon (256-128)
+- utilisez la condition initiale de l'article
+- pas de temps: calcul de CFL. condition de stab semi-lagrangien: compliqué, typiquement plusieurs CFL
