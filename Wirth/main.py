@@ -67,15 +67,15 @@ for i in range(Nx):
 ###########################
 def theta_initialization(k):
     """Initialisation de la température
-    i=1: sinusoïdale
-    i=2: 
+    k=1: sinusoïdale
+    k=2: 
     """
     theta = np.zeros((Nx,Ny))                                   # les inconnues à l'instant t
     for i in range(Nx):
         for j in range(Ny):
             if(k==1):
                 theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
-            #elif(i==2):       
+            #elif(k==2):       
 
     return theta 
         
