@@ -90,7 +90,7 @@ u,v = vitesses(theta)                                       # vitesses u et v à
 utm1,vtm1 = np.copy(u), np.copy(v)                          # vitesses u et v à instant t-dt (au début égale aux celles de t ?)
 uloc = 0                                                    # vitesse u locale à instant t (utilisée dans la boucle)
 vloc = 0                                                    # ~ v
-uloctm1 = 0                                                 # vitesse u locale à instant t+dt
+uloctm1 = 0                                                 # vitesse u locale à instant t-dt
 vloctm1 = 0                                                 # ~ v
 
 #####################################
