@@ -37,6 +37,8 @@ dx = (x1-x0) / (Nx-1)                                       # pas en x
 dy = (y1-y0) / (Ny-1)                                       # pas en y
 x = np.arange(x0,x1+dx,dx)                                  # coordonnées x du maillage : [x0, x0+dx, ... x1]
 y = np.arange(y0,y1+dy,dy)                                  # ~ y
+Lx = x1 - x0                                                # longueur du domaine en x
+Ly = y1 - y0                                                # ~ y
 Y,X = meshgrid(y,x)                                         # pour les plots
 theta = np.zeros((Nx,Ny))                                   # les inconnues à instant t
 for i in range(Nx):
@@ -152,9 +154,19 @@ for it in range(Nit):                                                   # itéra
                 alphay[i][j] = dt * (1.5 * vloc - 0.5 * vloctm1)        # ~ y
     
     ### calcul de theta à instant t+dt ###
-    for i in range(Nx):                                     # itération pour chaque point du maillage
+    for i in range(Nx):                                                 # itération pour chaque point du maillage
         for j in range(Ny):
-            thetatp1[i][j] = ftheta( (x[i] - alphax[i][j]), (y[j] - alphay[i][j]) ) # évaluation à Xo = Xn - alpha
+            xeval = x[i] - alphax[i][j]                                 # coordonnée de x du point d'évaluation de theta
+            yeval = y[j] - alphay[i][j]                                 # ~ y
+            if xeval < x0:                                              # si ce point est hors du maillage:
+                xeval = xeval + Lx                                      # rentrer le de l'autre côté
+            elif xeval > x1:                                            # = conditions limites périodiques
+                xeval = xeval - Lx
+            if yeval < y0:
+                yeval = yeval + Ly
+            elif yeval > y1:
+                yeval = yeval - Ly
+            thetatp1[i][j] = ftheta( yeval, xeval ) # évaluation à Xo = Xn - alpha
     
     ### mis à jour des valeurs à t moins 1 ###
     utm1 = np.copy(u)
