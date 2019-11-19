@@ -15,7 +15,7 @@ from scipy import interpolate
 
 # à changer
 plot = 1                                                    # 0: pas de plots, 1: plots
-dt = 60                                                     # pas de temps (s)
+dt = 3600                                                     # pas de temps (s)
 Tend = 48*60*60                                             # temps final (but: 48h) (s)
 Nx = 100                                                    # nombre de points en x
 Ny = 100                                                    # ~ y
@@ -65,10 +65,23 @@ for i in range(Nx):
 ###########################
 # initialisation de theta #
 ###########################
-theta = np.zeros((Nx,Ny))                                   # les inconnues à instant t
-for i in range(Nx):
-    for j in range(Ny):
-        theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
+        
+def theta_initialization(i):
+    """Initialisation de la température
+    i=1: sinusoïdale
+    i=2: 
+    """
+    theta = np.zeros((Nx,Ny))                                   # les inconnues à instant t
+    for i in range(Nx):
+        for j in range(Ny):
+            if(i==1):
+                theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
+            else if(i==2):
+                
+
+    return theta 
+        
+theta = theta_initialization(1)
 thetatp1 = np.copy(theta)                                   # les inconnues à instant t+dt (à calculer dans la boucle)
 Theta = np.zeros((Nx,Ny))                                   # stockage pour transformation de Fourier
 ThetaV = np.zeros((Nx,Ny))                                  # stockage pour transformation de Fourier
