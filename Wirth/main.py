@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Nov 12 13:45:56 2019
-
-@author: Jan
 """
 
 import numpy as np
 import matplotlib.pyplot as plt 
 from scipy import interpolate
+
+# toutes les valeurs sont en unités SI
 
 ###################
 # initialisations #
@@ -15,14 +15,14 @@ from scipy import interpolate
 
 # à changer
 plot = 1                                                    # 0: pas de plots, 1: plots
-dt = 0.5                                                    # pas de temps
-Tend = 10                                                   # temps final (but: 48h)
+dt = 60                                                     # pas de temps (s)
+Tend = 48*60*60                                             # temps final (but: 48h) (s)
 Nx = 100                                                    # nombre de points en x
 Ny = 100                                                    # ~ y
-x0 = 0.                                                     # premier point en x
-x1 = 2. * np.pi                                             # dernier point en x
-y0 = 0.                                                     # ~ y
-y1 = 2. * np.pi                                             # ~ y
+x0 = 0.                                                     # premier point en x (m)
+x1 = 2000*1000                                              # dernier point en x (m)
+y0 = 0.                                                     # ~ y (m)
+y1 = 2000*1000                                              # ~ y (m)
 
 # constantes physiques
 g = 9.81
@@ -32,24 +32,16 @@ theta_ref = 300
 A = g * (Ns - Nt) / (theta_ref * Ns * Nt)                   # constante défini arbitrairement
 
 # à ne pas changer (sauf theta initial)
-Nit = Tend/dt                                               # nombre d'itérations
+Nit = int(Tend/dt)                                          # nombre d'itérations
 dx = (x1-x0) / (Nx-1)                                       # pas en x
 dy = (y1-y0) / (Ny-1)                                       # pas en y
 x = np.arange(x0,x1+dx,dx)                                  # coordonnées x du maillage : [x0, x0+dx, ... x1]
 y = np.arange(y0,y1+dy,dy)                                  # ~ y
 Lx = x1 - x0                                                # longueur du domaine en x
 Ly = y1 - y0                                                # ~ y
-Y,X = meshgrid(y,x)                                         # pour les plots
-theta = np.zeros((Nx,Ny))                                   # les inconnues à instant t
-for i in range(Nx):
-    for j in range(Ny):
-        theta[i][j] = np.sin(x[i]/2)*np.sin(y[j]/2)
-thetatp1 = np.copy(theta)                                   # les inconnues à instant t+dt (à calculer dans la boucle)
-Theta = np.zeros((Nx,Ny))                                   # stockage pour transformation de Fourier
-ThetaV = np.zeros((Nx,Ny))                                  # stockage pour transformation de Fourier
+Y,X = np.meshgrid(y,x)                                         # pour les plots
 alphax = np.zeros((Nx,Ny))                                  # déplacements en x des particules de instant t à t+dt
 alphay = np.zeros((Nx,Ny))                                  # ~ y
-
 k = np.zeros((1,Nx))                                        # nombres d'onde en x
 l = np.zeros((1,Ny))                                        # ~ y
 K = np.zeros((Nx,Ny))                                       # magnitude de k et l (sqrt(k^2+l^2))
@@ -69,6 +61,17 @@ else:
 for i in range(Nx):
     for j in range(Ny):
         K[i][j] = np.sqrt(k[i]**2 + l[j]**2)
+        
+###########################
+# initialisation de theta #
+###########################
+theta = np.zeros((Nx,Ny))                                   # les inconnues à instant t
+for i in range(Nx):
+    for j in range(Ny):
+        theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
+thetatp1 = np.copy(theta)                                   # les inconnues à instant t+dt (à calculer dans la boucle)
+Theta = np.zeros((Nx,Ny))                                   # stockage pour transformation de Fourier
+ThetaV = np.zeros((Nx,Ny))                                  # stockage pour transformation de Fourier
     
 ###################################################
 # code qui calcule les vitesses à partir de theta #
@@ -80,7 +83,7 @@ def vitesses():
         for j in range(Ny):
             if K[i][j] != 0:
                 ThetaV[i][j] = Theta[i][j] * 1j * k[i] * A / K[i][j]    # multiplication avec k[i] pour dérivée de x
-                Theta[i][j] = Theta[i][j] * 1j * l[j] * A / K[i][j]     # multiplication avec l[j] pour dérivée de y
+                Theta[i][j] = -Theta[i][j] * 1j * l[j] * A / K[i][j]     # multiplication avec l[j] pour dérivée de y
     u = np.real(np.fft.ifft2(Theta))                        # partie réelle de l'inverse de Fourier
     v = np.real(np.fft.ifft2(ThetaV))                       # ~ y
     return(u,v)
@@ -88,7 +91,7 @@ def vitesses():
 ###############################
 # initialisation des vitesses #
 ###############################
-u,v = vitesses(theta)                                       # vitesses u et v à instant t
+u,v = vitesses()                                       # vitesses u et v à instant t
 utm1,vtm1 = np.copy(u), np.copy(v)                          # vitesses u et v à instant t-dt (au début égale aux celles de t ?)
 uloc = 0                                                    # vitesse u locale à instant t (utilisée dans la boucle)
 vloc = 0                                                    # ~ v
@@ -138,7 +141,7 @@ if plot:
 for it in range(Nit):                                                   # itération en temps : avancement de t à t+dt
     ### calcul des alphas ###
     for a in range(2):                                                  # 2 itérations pour calcul de alphas
-        u,v = vitesses(theta)                                           # calcul des vitesses à instant t
+        u,v = vitesses()                                           # calcul des vitesses à instant t
         fu = interpolate.interp2d(y, x, u, kind='linear')               # interpolation lineaire de u
         fv = interpolate.interp2d(y, x, v, kind='linear')               # ~ v
         
