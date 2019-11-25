@@ -215,3 +215,5 @@ for it in range(Nit):                                                   # itéra
         plt.ylabel('y')
         plt.colorbar()
         plt.show()
+        
+        ##autre blague
