@@ -4,7 +4,7 @@ Created on Tue Nov 12 13:45:56 2019
 """
 
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from scipy import interpolate
 
 # toutes les valeurs sont en unités SI
@@ -61,29 +61,29 @@ else:
 for i in range(Nx):
     for j in range(Ny):
         K[i][j] = np.sqrt(k[i]**2 + l[j]**2)
-        
+
 ###########################
 # initialisation de theta #
 ###########################
 def theta_initialization(k):
     """Initialisation de la température
     k=1: sinusoïdale
-    k=2: 
+    k=2:
     """
     theta = np.zeros((Nx,Ny))                                   # les inconnues à l'instant t
     for i in range(Nx):
         for j in range(Ny):
             if(k==1):
                 theta[i][j] = 20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
-            #elif(k==2):       
+            #elif(k==2):
 
-    return theta 
-        
+    return theta
+
 theta = theta_initialization(1)
 thetatp1 = np.copy(theta)                                   # les inconnues à instant t+dt (à calculer dans la boucle)
 Theta = np.zeros((Nx,Ny))                                   # stockage pour transformation de Fourier
 ThetaV = np.zeros((Nx,Ny))                                  # stockage pour transformation de Fourier
-    
+
 ###################################################
 # code qui calcule les vitesses à partir de theta #
 ###################################################
@@ -129,7 +129,7 @@ if plot:
     plt.ylabel('y')
     plt.colorbar()
     plt.show()
-    
+
     fig = plt.figure()
     plt.pcolor(X,Y,u)
     plt.title('u_0')
@@ -137,7 +137,7 @@ if plot:
     plt.ylabel('y')
     plt.colorbar()
     plt.show()
-    
+
     fig = plt.figure()
     plt.pcolor(X,Y,v)
     plt.title('v_0')
@@ -145,7 +145,7 @@ if plot:
     plt.ylabel('y')
     plt.colorbar()
     plt.show()
-    
+
 #######################
 # avancement en temps #
 #######################
@@ -155,18 +155,18 @@ for it in range(Nit):                                                   # itéra
         u,v = vitesses()                                           # calcul des vitesses à instant t
         fu = interpolate.interp2d(y, x, u, kind='linear')               # interpolation lineaire de u
         fv = interpolate.interp2d(y, x, v, kind='linear')               # ~ v
-        
+
         for i in range(Nx):                                             # itération pour chaque point du maillage
             for j in range(Ny):
                 xloc = x[i] - alphax[i][j]/2                            # coordonnée en x pour évaluation de la vitesse
                 yloc = y[i] - alphay[i][j]/2                            # ~ y
                 uloc = fu( yloc, xloc )                                 # évaluation de u à X - alpha/2
                 vloc = fu( yloc, xloc )                                 # ~ v
-                uloctm1 = futm1( yloc, xloc )                           # évaluation de utm1 à X - alpha/2      
+                uloctm1 = futm1( yloc, xloc )                           # évaluation de utm1 à X - alpha/2
                 vloctm1 = futm1( yloc, xloc )                           # ~ v
                 alphax[i][j] = dt * (1.5 * uloc - 0.5 * uloctm1)        # nouvelle estimation de alphax
                 alphay[i][j] = dt * (1.5 * vloc - 0.5 * vloctm1)        # ~ y
-    
+
     ### calcul de theta à instant t+dt ###
     for i in range(Nx):                                                 # itération pour chaque point du maillage
         for j in range(Ny):
@@ -181,7 +181,7 @@ for it in range(Nit):                                                   # itéra
             elif yeval > y1:
                 yeval = yeval - Ly
             thetatp1[i][j] = ftheta( yeval, xeval ) # évaluation à Xo = Xn - alpha
-    
+
     ### mis à jour des valeurs à t moins 1 ###
     utm1 = np.copy(u)
     vtm1 = np.copy(v)
@@ -189,7 +189,7 @@ for it in range(Nit):                                                   # itéra
     futm1 = fu
     fvtm1 = fv
     ftheta = interpolate.interp2d(y, x, theta, kind='cubic')
-    
+
     ### plots
     if plot:
         fig = plt.figure()
@@ -215,6 +215,3 @@ for it in range(Nit):                                                   # itéra
         plt.ylabel('y')
         plt.colorbar()
         plt.show()
-    
-    ##une blague
-        
