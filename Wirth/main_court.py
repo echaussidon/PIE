@@ -14,10 +14,11 @@ plots.plots(c.plot_theta,c.plot_vitesses,0)
 for itplot in range(c.Nitplot):                                 # itérations avec plot
     for itnoplot in range(c.Nitnoplot):                         # itérations sans plot
         it = itplot*c.Nitnoplot + itnoplot + 1                  # numéro d'itération
-        print("it = {}, t = {}".format(it,it*c.dt/60./60.))     # print it et temps
+        temps = it*c.dt/60./60.                                 # temps en heures
+        print("it = {}, t = {}".format(it,temps))               # print it et temps
         print("calcul des alphas")
         alphas.calc_alpha()                                     # calcul des alphas
         print("avancement en temps")                                
         av.calc_thetatp1()                                      # avancement en temps
     # plots
-    plots.plots(c.plot_theta,c.plot_vitesses,0)
+    plots.plots(c.plot_theta,c.plot_vitesses,temps)
