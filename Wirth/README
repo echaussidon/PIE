@@ -1,3 +1,6 @@
 vitesses.py calcule les dérivées en utilisant la transformation de Fourier. Base pour calcul de u et v.
 
 main.py contient la structure globale pour la simulation.
+
+main_court.py utilise aussi constantes.py, variables.py, init_theta.py, uv.py, alpha.py, avancement.py et plots.py.
+Ce code est équivalent à main.py, mais divisé en plusieurs fichiers pour lisibilité.
