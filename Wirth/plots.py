@@ -9,44 +9,50 @@ import variables as var
 def plots(plot_theta, plot_vitesses, t):
     if plot_theta:
         plt.figure(figsize=(15,7.5))
-        plt.pcolor(c.X,c.Y,var.theta,cmap=plt.cm.viridis)
+        ax = plt.subplot(111)
+        ax.set_aspect(1)
+        fig = ax.pcolor(c.X,c.Y,var.theta,cmap=plt.cm.viridis)
         plt.title('theta_'+str(t))
         plt.xlabel('x')
         plt.ylabel('y')
-        plt.colorbar()
+        cbar = plt.colorbar(fig)
+        cbar.ax.set_ylabel("(K)")
         if c.savefig:
             plt.savefig("Theta/theta_{}.png".format(t))
             print("save theta")
+            plt.show()
         else:
             plt.show()
             
     if plot_vitesses:
         plt.figure(figsize=(15,7.5))
-        plt.pcolor(c.X,c.Y,var.u,cmap=plt.cm.viridis)
+        ax = plt.subplot(111)
+        ax.set_aspect(1)
+        fig = ax.pcolor(c.X,c.Y,var.u,cmap=plt.cm.viridis)
         plt.title('u_'+str(t))
         plt.xlabel('x')
         plt.ylabel('y')
-        plt.colorbar()
+        cbar = plt.colorbar(fig)
+        cbar.ax.set_ylabel("(m/s)")
         if c.savefig:
             plt.savefig("U/U_{}.png".format(t))
             print("save U")
+            plt.show()
         else:
             plt.show()
         
         plt.figure(figsize=(15,7.5))
-        plt.pcolor(c.X,c.Y,var.v,cmap=plt.cm.viridis)
+        ax = plt.subplot(111)
+        ax.set_aspect(1)
+        fig = ax.pcolor(c.X,c.Y,var.v,cmap=plt.cm.viridis)
         plt.title('v_'+str(t))
         plt.xlabel('x')
         plt.ylabel('y')
-        plt.colorbar()
+        cbar = plt.colorbar(fig)
+        cbar.ax.set_ylabel("(m/s)")
         if c.savefig:
             plt.savefig("V/V_{}.png".format(t))
             print("save V")
-        else:
             plt.show()
-
-#def plot_theta(t):
-#    
-#
-#def plot_vitesses(t):
-    
+        else:
+            plt.show()    
