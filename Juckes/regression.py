@@ -19,33 +19,33 @@ LON = data.variables['g0_lon_2']
 
 
 #calcul des tableaux correspondant aux moyennes zonales
-#nb_point_lat = 10 #correspond au nombre de points en haut et en bas sur lesquels on va moyenner
-#nb_point_lon = 10 #correspond au nombre de points à gauche et à droite sur lesquels on va moyenner
-#GP_zonal_mean = np.zeros((LAT.size,LON.size))
-#POT_zonal_mean = np.zeros((LAT.size,LON.size))
-#for i in range(LAT.size):
-#    print(i)
-#    for j in range(LON.size):
-#        if(i-nb_point_lat>0):
-#            lim_inf_lat=i-nb_point_lat
-#        else: lim_inf_lat=0
-#        
-#        if(i+nb_point_lat<LAT.size):
-#            lim_sup_lat=i+nb_point_lat
-#        else: lim_inf_lat=LAT.size
-#            
-#        if(i-nb_point_lon>0):
-#            lim_inf_lon=i-nb_point_lon
-#        else: lim_inf_lon=0
-#
-#        if(i+nb_point_lon<LON.size):
-#            lim_sup_lon=i+nb_point_lon
-#        else: lim_inf_lon=LON.size
-#            
-#            
-#        GP_zonal_mean[i,j] = np.mean(GP_tot[:, lim_inf_lat:lim_sup_lat, lim_inf_lon:lim_sup_lon])
-#        POT_zonal_mean[i,j] = np.mean(POT_tot[:, lim_inf_lat:lim_sup_lat, lim_inf_lon:lim_sup_lon])
-#    
+nb_point_lat = 10 #correspond au nombre de points en haut et en bas sur lesquels on va moyenner
+nb_point_lon = 10 #correspond au nombre de points à gauche et à droite sur lesquels on va moyenner
+GP_zonal_mean = np.zeros((LAT.size,LON.size))
+POT_zonal_mean = np.zeros((LAT.size,LON.size))
+for i in range(LAT.size):
+    print(i)
+    for j in range(LON.size):
+        if(i-nb_point_lat>0):
+            lim_inf_lat=i-nb_point_lat
+        else: lim_inf_lat=0
+        
+        if(i+nb_point_lat<LAT.size):
+            lim_sup_lat=i+nb_point_lat
+        else: lim_inf_lat=LAT.size
+            
+        if(i-nb_point_lon>0):
+            lim_inf_lon=i-nb_point_lon
+        else: lim_inf_lon=0
+
+        if(i+nb_point_lon<LON.size):
+            lim_sup_lon=i+nb_point_lon
+        else: lim_inf_lon=LON.size
+            
+            
+        GP_zonal_mean[i,j] = np.mean(GP_tot[:, lim_inf_lat:lim_sup_lat, lim_inf_lon:lim_sup_lon])
+        POT_zonal_mean[i,j] = np.mean(POT_tot[:, lim_inf_lat:lim_sup_lat, lim_inf_lon:lim_sup_lon])
+    
 
 
 
