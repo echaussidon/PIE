@@ -18,7 +18,7 @@ def theta_initialization(Nx,Ny,k):
                 theta[i][j] = -20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
     
     elif(k==2 or k==3):
-        delta = 0.14            # épaisseur de l'intrusion                                
+        delta = 0.12            # épaisseur de l'intrusion (0.12 donne le même rapport longueur-épaisseur que l'article)                                
         if (k == 2):            # intrusion horizontale (comme l'article)
             a_x = 0.1           # point où l'intrusion commence (0.1 -> 10%)
             a_y = 0.5-delta     # ~ y
@@ -82,7 +82,7 @@ def theta_initialization(Nx,Ny,k):
     
     elif(k==4):
         ampl = -20;
-        delta_y = 0.14            # épaisseur de l'intrusion 
+        delta_y = 0.12      # épaisseur de l'intrusion (0.12 donne le même rapport longueur-épaisseur que l'article)
         delta_x = delta_y * c.Ly/c.Lx                               
         a_x = 0.1           # point où l'intrusion commence (0.1 -> 10%)
         a_y = 0.5-delta_y     # ~ y
@@ -108,7 +108,6 @@ def theta_initialization(Nx,Ny,k):
                     theta[i][j] = 0
                 else:
                     theta[i][j] = ampl * (1+np.sin(np.pi*(c.y[j]-0.5*c.Ly)/R+np.pi/2))/2
-        
         u = v
         v = Nx
         for i in range(u,v):
