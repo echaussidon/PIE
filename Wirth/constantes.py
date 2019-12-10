@@ -21,7 +21,7 @@ folder = "folder"                               # dossier pour sauver les figure
 savefig = 0                                     # sauver ou montrer les figures
 plot_theta = 1                                  # faire le plot de theta ou non
 plot_vitesses = 1                               # ~ vitesses
-plot_all = 1                                    # tout sur une figure
+plot_all = 0                                    # tout sur une figure
 
 # à ne pas changer
 Nit = int(Tend/dt)                              # nombre d'itérations

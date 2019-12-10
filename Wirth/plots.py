@@ -7,24 +7,7 @@ import matplotlib.pyplot as plt
 import constantes as c
 import variables as var
 
-def plots(t):
-    if c.plot_theta:
-        plt.figure(figsize=(15,7.5))
-        ax = plt.subplot(111)
-        ax.set_aspect(1)
-        fig = ax.contourf(c.X,c.Y,var.theta,np.arange(-25,6),cmap=plt.cm.hsv, vmin = -25, vmax = 5)
-        plt.title('theta_'+str(t))
-        plt.xlabel('x')
-        plt.ylabel('y')
-        cbar = plt.colorbar(fig)
-        cbar.ax.set_ylabel("(K)")
-        if c.savefig:
-            plt.savefig("Simulations/{}/Theta/hsv_theta_dt{}_t{}.png".format(c.folder,c.dt,t))
-            print("save theta")
-            plt.show()
-        else:
-            plt.show()
-            
+def plots(t):    
     if c.plot_vitesses:
         plt.figure(figsize=(15,7.5))
         ax = plt.subplot(111)
@@ -56,7 +39,25 @@ def plots(t):
             print("save V")
             plt.show()
         else:
-            plt.show()    
+            plt.show()   
+    
+    if c.plot_theta:
+        plt.figure(figsize=(15,7.5))
+        ax = plt.subplot(111)
+        ax.set_aspect(1)
+        fig = ax.contourf(c.X,c.Y,var.theta,np.arange(-25,6),cmap=plt.cm.hsv, vmin = -25, vmax = 5)
+        plt.title('theta_'+str(t))
+        plt.xlabel('x')
+        plt.ylabel('y')
+        cbar = plt.colorbar(fig)
+        cbar.ax.set_ylabel("(K)")
+        if c.savefig:
+            plt.savefig("Simulations/{}/Theta/hsv_theta_dt{}_t{}.png".format(c.folder,c.dt,t))
+            print("save theta")
+            plt.show()
+        else:
+            plt.show()      
+    
     if c.plot_all:
         plt.figure(figsize=(15,22.5))
         ax1 = plt.subplot(311)
