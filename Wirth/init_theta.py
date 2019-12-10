@@ -82,9 +82,9 @@ def theta_initialization(Nx,Ny,k):
     
     elif(k==4):
         ampl = -20;
-        delta_y = 0.4            # épaisseur de l'intrusion 
+        delta_y = 0.14            # épaisseur de l'intrusion 
         delta_x = delta_y * c.Ly/c.Lx                               
-        a_x = 0.5-delta_x           # point où l'intrusion commence (0.1 -> 10%)
+        a_x = 0.1           # point où l'intrusion commence (0.1 -> 10%)
         a_y = 0.5-delta_y     # ~ y
         L_x = 1-(delta_x+a_x)*2   # longueur de la partie droite en x
         L_y = 1-(delta_y+a_y)*2   # ~ y
