@@ -20,7 +20,7 @@ LON = data.variables['g0_lon_2']
 
 #calcul des tableaux correspondant aux moyennes zonales
 nb_point_lat = 10 #correspond au nombre de points en haut et en bas sur lesquels on va moyenner
-nb_point_lon = 10 #correspond au nombre de points à gauche et à droite sur lesquels on va moyenner
+nb_point_lon = 30 #correspond au nombre de points à gauche et à droite sur lesquels on va moyenner
 GP_zonal_mean = np.zeros((LAT.size,LON.size))
 POT_zonal_mean = np.zeros((LAT.size,LON.size))
 for i in range(LAT.size):
@@ -51,6 +51,8 @@ for i in range(LAT.size):
 
 
 def regression_latmin_latmax(L_min, L_max, save=False, savename='blabblaaa', show=True):
+    """ Renvoie un tableau contenant les coefficients reliant température potentielle et hauteur de trapopause. Unité: K/km. 
+    Le tableau contient les coeff pour l'hémisphère nord, puis sud, puis la même chose sans la moyenne zonale"""
     GP_plus = np.array([])
     POT_plus = np.array([])
 
@@ -63,6 +65,8 @@ def regression_latmin_latmax(L_min, L_max, save=False, savename='blabblaaa', sho
     dGP_moins = np.array([])
     dPOT_moins = np.array([])
 
+    
+    #Les valeurs des géopotentiels et des températures potentielles sont mises dans une liste unique selon une seule dimension ( plus pratique pour la régression)
     for i in range(data.variables['initial_time0_hours'].size):
         GP_plus = np.append(GP_plus, GP_tot[i,(LAT[:] > L_min) & (LAT[:] < L_max), :])
         POT_plus = np.append(POT_plus, POT_tot[i,(LAT[:] > L_min) & (LAT[:] < L_max), :])
@@ -78,67 +82,76 @@ def regression_latmin_latmax(L_min, L_max, save=False, savename='blabblaaa', sho
     GH_moins = GP_moins/9.81
     dGH_plus = dGP_plus/9.81
     dGH_moins = dGP_moins/9.81
-
-    """slope, intercept, r_value, p_value, std_err = stats.linregress(POT, GH)
-
-    plt.figure(figsize=(16,8))
-    plt.scatter(POT, GH, s=1, label="Lmin = {} | Lmax = {} | #points = {}".format(L_min, L_max, GH.size))
-    plt.plot(POT, intercept + slope*POT, 'r', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope, 1/slope*1000, intercept, r_value**2))
-    plt.xlabel(r'Potential Temperature [K]')
-    plt.ylabel(r'Geopential Height [m]')
-    plt.title(r"Representation of (9.3)")
-    plt.legend() """
     
     
     
     
-
-#    dGH_plus = GH_plus - np.mean(GH_plus)
-#    dPOT_plus = POT_plus - np.mean(POT_plus)
-#    dGH_moins = GH_moins - np.mean(GH_moins)
-#    dPOT_moins = POT_moins - np.mean(POT_moins)
-    
-    
-    #Plot des variables complètes
-    slope, intercept, r_value, p_value, std_err = stats.linregress(POT_plus, GH_plus)
+    #Plot des variables complètes ie sans avoir enlevé la moyenne zonale. D'abord pour l'hémisphère nord puis pour l'hémisphère sud
+    slope_N, intercept, r_value, p_value, std_err = stats.linregress(POT_plus, GH_plus)
     plt.figure(figsize=(16,8))
     plt.scatter(POT_plus, GH_plus, s=1, c='b', alpha=0.6, label="Lmin = {} | Lmax = {} | #points = {}".format(L_min, L_max, GH_plus.size))
-    plt.plot(POT_plus, intercept + slope*POT_plus, 'r', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope, 1/slope*1000, intercept, r_value**2))
+    plt.plot(POT_plus, intercept + slope_N*POT_plus, 'r', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope_N, 1/slope_N*1000, intercept, r_value**2))
 
-    slope, intercept, r_value, p_value, std_err = stats.linregress(POT_moins, GH_moins)
+    slope_S, intercept, r_value, p_value, std_err = stats.linregress(POT_moins, GH_moins)
     plt.scatter(POT_moins, GH_moins, s=1, c='c', alpha = 0.6, label="Lmin = {} | Lmax = {} | #points = {}".format(-L_max, -L_min, GH_moins.size))
-    plt.plot(POT_moins, intercept + slope*POT_moins, 'g', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope, 1/slope*1000, intercept, r_value**2))
+    plt.plot(POT_moins, intercept + slope_S*POT_moins, 'g', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope_S, 1/slope_S*1000, intercept, r_value**2))
     
     plt.legend()
     plt.xlabel(r'Potential Temperature Anomaly [K]')
     plt.ylabel(r'Geopential Height Anomaly [m]')
     plt.title(r"Representation of (9.3)")
     
+    if show:
+        plt.show()
+    if save:
+        plt.savefig("Regression/" + savename + "_global_{}_{}.png".format(L_min, L_max), transparent=True)
+
+    
     #Plot des variables auxquelles on a retiré la moyenne zonale
-    slope, intercept, r_value, p_value, std_err = stats.linregress(dPOT_plus, dGH_plus)
+    slope_N_zonal, intercept, r_value, p_value, std_err = stats.linregress(dPOT_plus, dGH_plus)
     plt.figure(figsize=(16,8))
     plt.scatter(dPOT_plus, dGH_plus, s=1, c='b', alpha=0.6, label="Lmin = {} | Lmax = {} | #points = {}".format(L_min, L_max, dGH_plus.size))
-    plt.plot(dPOT_plus, intercept + slope*dPOT_plus, 'r', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope, 1/slope*1000, intercept, r_value**2))
+    plt.plot(dPOT_plus, intercept + slope_N_zonal*dPOT_plus, 'r', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope_N_zonal, 1/slope_N_zonal*1000, intercept, r_value**2))
 
-    slope, intercept, r_value, p_value, std_err = stats.linregress(dPOT_moins, dGH_moins)
-    plt.scatter(dPOT_moins, dGH_moins, s=1, c='c', alpha=0.6, label="Lmin = {} | Lmax = {} | #points = {}".format(L_min, L_max, dGH_moins.size))
-    plt.plot(dPOT_moins, intercept + slope*dPOT_moins, 'g', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope, 1/slope*1000, intercept, r_value**2))
+    slope_S_zonal, intercept, r_value, p_value, std_err = stats.linregress(dPOT_moins, dGH_moins)
+    plt.scatter(dPOT_moins, dGH_moins, s=1, c='c', alpha=0.6, label="Lmin = {} | Lmax = {} | #points = {}".format(-L_min, -L_max, dGH_moins.size))
+    plt.plot(dPOT_moins, intercept + slope_S_zonal*dPOT_moins, 'g', label='a*x + b with \na = {:.2f} [m/K] | 1/a = {:.2f} [K/km] \nb={:.2f} \nR^2 = {:.3f}'.format(slope_S_zonal, 1/slope_S_zonal*1000, intercept, r_value**2))
 
     plt.legend()
     plt.xlabel(r'Potential Temperature Anomaly [K]')
     plt.ylabel(r'Geopential Height Anomaly [m]')
-    plt.title(r"Representation of (9.3) with substracion of the zonal mean")
+    plt.title(r"Representation of (9.3) with substraction of the zonal mean")
     
 
     if show:
         plt.show()
     if save:
-        plt.savefig("Regression/" + savename + "_{}_{}.png".format(L_min, L_max), transparent=True)
+        plt.savefig("Regression/" + savename + "_zonal_{}_{}.png".format(L_min, L_max), transparent=True)
+        
 
-L_min = [0, 15, 30, 45, 60, 75]
-L_max = [15, 30, 45, 60, 75, 90]
+    return [1/slope_N*1000, 1/slope_S*1000, 1/slope_N_zonal*1000, 1/slope_S_zonal*1000]
 
-#for i in range(1):
- #   regression_latmin_latmax(L_min[i], L_max[i], save=True, savename='regression', show=False)
 
-regression_latmin_latmax(L_min[4], L_max[4], save=True, savename='regression', show=False)
+L_min = [0., 15., 30., 45., 60., 75.]
+L_max = [15., 30., 45., 60., 75., 90.]
+slope_N=[]
+slope_S=[]
+slope_N_zonal=[]
+slope_S_zonal=[]
+
+for i in range(len(L_min)):
+    regression = regression_latmin_latmax(L_min[i], L_max[i], save=False, savename='regression', show=False)
+    slope_N.append(regression[0])
+    slope_S.append(regression[1])
+    slope_N_zonal.append(regression[2])
+    slope_S_zonal.append(regression[3])
+
+
+plt.figure()
+plt.plot([(x+y)/2 for x,y in zip(L_min, L_max)], slope_N, label="Pente dans l'hemisphère nord")
+plt.plot([(x+y)/2 for x,y in zip(L_min, L_max)], slope_S, label="Pente dans l'hemisphère sud")
+plt.plot([(x+y)/2 for x,y in zip(L_min, L_max)], slope_N_zonal, label="Pente dans l'hemisphère nord sans la moyenne zonale")
+plt.plot([(x+y)/2 for x,y in zip(L_min, L_max)], slope_S_zonal, label="Pente dans l'hemisphère sud sans la moyenne zonale")
+plt.legend()
+plt.savefig("Regression/" + "_evolution_de_la_pente_avec_la_latitude")
+plt.show()

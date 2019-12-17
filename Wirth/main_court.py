@@ -8,7 +8,7 @@ import alphas
 import avancement as av
 
 # plot initial
-plots.plots(c.plot_theta,c.plot_vitesses,0)
+plots.plots(0)
 
 # avancement en temps
 for itplot in range(c.Nitplot):                                 # itérations avec plot
@@ -21,4 +21,4 @@ for itplot in range(c.Nitplot):                                 # itérations av
         print("avancement en temps")                                
         av.calc_thetatp1()                                      # avancement en temps
     # plots
-    plots.plots(c.plot_theta,c.plot_vitesses,temps)
+    plots.plots(temps)

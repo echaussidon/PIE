@@ -17,9 +17,11 @@ x0 = 0.                                         # premier point en x (m)
 x1 = 2048*1000                                  # dernier point en x (m)
 y0 = 0.                                         # ~ y (m)
 y1 = 1024*1000                                  # ~ y (m)
+folder = "folder"                               # dossier pour sauver les figures
 savefig = 0                                     # sauver ou montrer les figures
 plot_theta = 1                                  # faire le plot de theta ou non
 plot_vitesses = 1                               # ~ vitesses
+plot_all = 0                                    # tout sur une figure
 
 # à ne pas changer
 Nit = int(Tend/dt)                              # nombre d'itérations

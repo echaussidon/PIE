@@ -11,15 +11,15 @@ K = np.zeros((c.Nx,c.Ny))                                     # magnitude de k e
 
 if np.mod(c.Nx,2) == 0:                                       # remplir k, ça diffère si N est pair ou impair
     # k = [0, 1, ... N/2 - 1, -N/2, -N/2 + 1, ... -1]
-    k = np.concatenate((np.arange(0,c.Nx/2), np.arange(-c.Nx/2,0)))
+    k = np.concatenate((np.arange(0,c.Nx/2), np.arange(-c.Nx/2,0)))*2*np.pi/c.Lx
 else:
     # k = [0, 1, ... (N-1)/2 - 1, (N-1)/2, -(N-1)/2, -(N-1)/2 + 1, ... -1]
-    k = np.concatenate((np.arange(0,(c.Nx-1)/2+1), np.arange(-(c.Nx-1)/2,0)))
+    k = np.concatenate((np.arange(0,(c.Nx-1)/2+1), np.arange(-(c.Nx-1)/2,0)))*2*np.pi/c.Lx
 
 if np.mod(c.Ny,2) == 0:                                       # ~ y
-    l = np.concatenate((np.arange(0,c.Ny/2), np.arange(-c.Ny/2,0)))
+    l = np.concatenate((np.arange(0,c.Ny/2), np.arange(-c.Ny/2,0)))*2*np.pi/c.Ly
 else:
-    l = np.concatenate((np.arange(0,(c.Ny-1)/2+1), np.arange(-(c.Ny-1)/2,0)))
+    l = np.concatenate((np.arange(0,(c.Ny-1)/2+1), np.arange(-(c.Ny-1)/2,0)))*2*np.pi/c.Ly
 
 for i in range(c.Nx):
     for j in range(c.Ny):
@@ -31,8 +31,15 @@ def vitesses(theta):                                        # calcule les vitess
     for i in range(c.Nx):
         for j in range(c.Ny):
             if K[i][j] != 0:
-                ThetaV[i][j] = Theta[i][j] * 1j * k[i] * c.A / K[i][j]    # multiplication avec k[i] pour dérivée de x
+                ThetaV[i][j] = ThetaV[i][j] * 1j * k[i] * c.A / K[i][j]    # multiplication avec k[i] pour dérivée de x
                 Theta[i][j] = -Theta[i][j] * 1j * l[j] * c.A / K[i][j]     # multiplication avec l[j] pour dérivée de y
+            else:
+                ThetaV[i][j] = 0
+                Theta[i][j] = 0
     u = np.real(np.fft.ifft2(Theta))                        # partie réelle de l'inverse de Fourier
     v = np.real(np.fft.ifft2(ThetaV))                       # ~ y
+#    print('min u: ' + str(np.min(u)))
+#    print('max u: ' + str(np.max(u)))
+#    print('min v: ' + str(np.min(v)))
+#    print('max v: ' + str(np.max(v)))
     return(u,v)
