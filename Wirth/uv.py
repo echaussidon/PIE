@@ -25,21 +25,21 @@ for i in range(c.Nx):
     for j in range(c.Ny):
         K[i][j] = np.sqrt(k[i]**2 + l[j]**2)
 
-def vitesses(theta):                                        # calcule les vitesses à partir de theta
-    Theta = np.fft.fft2(theta)                              # transformation de Fourier en 2D, utilisée pour le calcul de u
-    ThetaV = np.copy(Theta)                                 # copie de theta, utilisée pour le calcul de v
+def vitesses(theta, z_ref):                                        # calcule les vitesses à partir de theta
+    ThetaU = np.fft.fft2(theta)                              # transformation de Fourier en 2D, utilisée pour le calcul de u
+    ThetaV = np.copy(ThetaU)                                 # copie de theta, utilisée pour le calcul de v
     for i in range(c.Nx):
         for j in range(c.Ny):
+            if z_ref:
+                factor_z = np.exp(-c.Nt * K[i][j] * np.abs(c.z_ref) / c.f)
+            else:
+                factor_z = 1
             if K[i][j] != 0:
-                ThetaV[i][j] = ThetaV[i][j] * 1j * k[i] * c.A / K[i][j]    # multiplication avec k[i] pour dérivée de x
-                Theta[i][j] = -Theta[i][j] * 1j * l[j] * c.A / K[i][j]     # multiplication avec l[j] pour dérivée de y
+                ThetaV[i][j] = ThetaV[i][j] * 1j * k[i] * c.A / K[i][j] * factor_z   # multiplication avec k[i] pour dérivée de x
+                ThetaU[i][j] = -ThetaU[i][j] * 1j * l[j] * c.A / K[i][j] * factor_z    # multiplication avec l[j] pour dérivée de y
             else:
                 ThetaV[i][j] = 0
-                Theta[i][j] = 0
-    u = np.real(np.fft.ifft2(Theta))                        # partie réelle de l'inverse de Fourier
+                ThetaU[i][j] = 0
+    u = np.real(np.fft.ifft2(ThetaU))                        # partie réelle de l'inverse de Fourier
     v = np.real(np.fft.ifft2(ThetaV))                       # ~ y
-#    print('min u: ' + str(np.min(u)))
-#    print('max u: ' + str(np.max(u)))
-#    print('min v: ' + str(np.min(v)))
-#    print('max v: ' + str(np.max(v)))
     return(u,v)

@@ -18,7 +18,9 @@ for itplot in range(c.Nitplot):                                 # itérations av
         print("it = {}, t = {}".format(it,temps))               # print it et temps
         print("calcul des alphas")
         alphas.calc_alpha()                                     # calcul des alphas
+        alphas.calc_alpha_z_ref()
         print("avancement en temps")                                
         av.calc_thetatp1()                                      # avancement en temps
+        av.calc_DT_histtp1()
     # plots
     plots.plots(temps)
