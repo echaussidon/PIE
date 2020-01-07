@@ -10,7 +10,7 @@ import uv
 
 def calc_alpha():
 
-    var.u,var.v = uv.vitesses(var.theta)                            # calcul des vitesses à instant t
+    var.u,var.v = uv.vitesses(var.theta, False)                            # calcul des vitesses à instant t
     fu = interpolate.interp2d(c.y, c.x, var.u, kind='linear')       # interpolation lineaire de u
     fv = interpolate.interp2d(c.y, c.x, var.v, kind='linear')       # ~ v
     futm1 = interpolate.interp2d(c.y, c.x, var.utm1, kind='linear') # interpolation lineaire de utm1
