@@ -6,15 +6,12 @@ import constantes as c
 import plots
 import alphas
 import avancement as av
-import variables as var
-import uv
 import w
 
-# plot initial
-plots.plots(0)
-#var.w = uv.calcW(var.theta, var.u, var.v, var.u_z_ref, var.v_z_ref)
-w.calcW()
-plots.plotW()
+# plots initials
+plots.plots(0)                                   
+plots.plotDT(0)
+
 # avancement en temps
 for itplot in range(c.Nitplot):                                 # itérations avec plot
     for itnoplot in range(c.Nitnoplot):                         # itérations sans plot
@@ -23,13 +20,15 @@ for itplot in range(c.Nitplot):                                 # itérations av
         print("it = {}, t = {}".format(it,temps))               # print it et temps
         print("calcul des alphas")
         alphas.calc_alpha()                                     # calcul des alphas
-#        alphas.calc_alpha_z_ref()
-        w.calcW()
-        plots.plotW()
-        print("avancement en temps")                                
-        av.calc_thetatp1()                                      # avancement en temps
+        alphas.calc_alpha_z_ref()                               # calcul des alphas sur la couche en dessous
         
-#        av.calc_DT_histtp1()
+        print("avancement en temps")                               
+        av.calc_thetatp1()                                      # avancement en temps pour theta
+        w.calcW()                                               # calcul des vitesses verticales
+
+        av.calc_DT_histtp1()                                    # calcul de DT_hist
+        av.calc_DT_disptp1()                                    # calcul de DT_disp
+        
     # plots
     plots.plots(temps)
-    plots.plotW()
+    plots.plotDT(temps)
