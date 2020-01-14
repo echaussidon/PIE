@@ -22,6 +22,7 @@ def calc_thetatp1():
             elif yeval > c.y1:
                 yeval = yeval - c.Ly
             var.thetatp1[i][j] = ftheta( yeval, xeval )                 # évaluation à Xo = Xn - alpha
+    var.thetatm1 = np.copy(var.theta)
     var.theta = np.copy(var.thetatp1)                                   # mis à jour de theta
     
 def calc_DT_histtp1():

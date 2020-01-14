@@ -28,7 +28,7 @@ def plots(t):
         plt.figure(figsize=(15,7.5))
         ax = plt.subplot(111)
         ax.set_aspect(1)
-        fig = ax.contourf(c.X,c.Y,var.v,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
+        fig = ax.contourf(c.X,c.Y,var.u_z_ref,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
         plt.title('v_'+str(t))
         plt.xlabel('x')
         plt.ylabel('y')
@@ -90,3 +90,15 @@ def plots(t):
             plt.show()
         else:
             plt.show()
+    
+def plotW():
+    plt.figure(figsize=(15,7.5))
+    ax = plt.subplot(111)
+    ax.set_aspect(1)
+    fig = ax.contourf(c.X,c.Y,var.w)#,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
+    plt.title('w')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    cbar = plt.colorbar(fig)
+    cbar.ax.set_ylabel("(m/s)")
+    plt.show()
