@@ -15,8 +15,27 @@ def calc_alpha():
     fv = interpolate.interp2d(c.y, c.x, var.v, kind='linear')       # ~ v
     futm1 = interpolate.interp2d(c.y, c.x, var.utm1, kind='linear') # interpolation lineaire de utm1
     fvtm1 = interpolate.interp2d(c.y, c.x, var.vtm1, kind='linear') # ~ v
+    vfu=np.vectorize(fu)    
+    vfv=np.vectorize(fv)
+    vfutm1=np.vectorize(futm1)    
+    vfvtm1=np.vectorize(fvtm1)
 
-    for a in range(2):                                                  # 2 itérations pour calcul de alphas
+    for a in range(2):              # 2 itérations pour calcul de alphas
+
+        X=np.tile(c.x,(c.Ny,1)).transpose()
+        Y=np.tile(c.y, (c.Nx, 1))
+        
+        Xloc=np.remainder(X-var.alphax/2, c.Lx)
+        Yloc=np.remainder(Y-var.alphay/2, c.Ly)
+        
+        Uloc = vfu(Yloc, Xloc)
+        Vloc = vfv(Yloc, Xloc)
+        Uloctm1 = vfutm1(Yloc, Xloc)
+        Vloctm1 = vfvtm1(Yloc, Xloc)
+        
+        var.alphax=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
+        var.alphay=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
+    """                                            
         for i in range(c.Nx):                                           # itération pour chaque point du maillage
             for j in range(c.Ny):
                 xloc = c.x[i] - var.alphax[i][j]/2                      # coordonnée en x pour évaluation de la vitesse
@@ -35,7 +54,7 @@ def calc_alpha():
                 vloctm1 = fvtm1( yloc, xloc )                           # ~ v
                 var.alphax[i][j] = c.dt * (1.5 * uloc - 0.5 * uloctm1)  # nouvelle estimation de alphax
                 var.alphay[i][j] = c.dt * (1.5 * vloc - 0.5 * vloctm1)  # ~ y
-
+"""
     var.utm1 = np.copy(var.u)                                           # mis à jour de utm1
     var.vtm1 = np.copy(var.v)                                           # ~ y
 
