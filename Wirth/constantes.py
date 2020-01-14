@@ -10,7 +10,7 @@ import numpy as np
 init = 2                                        # condition initiale de init_theta
 dt = 900                                        # pas de temps (s)
 Tend = 48*60*60                                 # temps final (but: 48h) (s)
-tplot = 3600                                    # fréquence des plots (un plot chaque tplot) (s)
+tplot = 3600                                    # fréquence des plots (un plot chaque tplot) (s) & fréquence d'écriture dans le fichier netcdf
 Nx = 64                                        # nombre de points en x
 Ny = 64                                        # ~ y
 x0 = 0.                                         # premier point en x (m)
@@ -22,6 +22,7 @@ savefig = 0                                     # sauver ou montrer les figures
 plot_theta = 1                                  # faire le plot de theta ou non
 plot_vitesses = 1                               # ~ vitesses
 plot_all = 0                                    # tout sur une figure
+savefilename = "simulation_ini_0.nc"
 
 # à ne pas changer
 Nit = int(Tend/dt)                              # nombre d'itérations
