@@ -25,7 +25,7 @@ for i in range(c.Nx):
     for j in range(c.Ny):
         K[i][j] = np.sqrt(k[i]**2 + l[j]**2)
 
-def vitesses(theta, z_ref):                                        # calcule les vitesses à partir de theta
+def vitesses(theta, z_ref):                                  # calcule les vitesses à partir de theta
     ThetaU = np.fft.fft2(theta)                              # transformation de Fourier en 2D, utilisée pour le calcul de u
     ThetaV = np.copy(ThetaU)                                 # copie de theta, utilisée pour le calcul de v
     for i in range(c.Nx):
@@ -36,10 +36,10 @@ def vitesses(theta, z_ref):                                        # calcule les
                 factor_z = 1
             if K[i][j] != 0:
                 ThetaV[i][j] = ThetaV[i][j] * 1j * k[i] * c.A / K[i][j] * factor_z   # multiplication avec k[i] pour dérivée de x
-                ThetaU[i][j] = -ThetaU[i][j] * 1j * l[j] * c.A / K[i][j] * factor_z    # multiplication avec l[j] pour dérivée de y
+                ThetaU[i][j] = -ThetaU[i][j] * 1j * l[j] * c.A / K[i][j] * factor_z  # multiplication avec l[j] pour dérivée de y
             else:
                 ThetaV[i][j] = 0
                 ThetaU[i][j] = 0
-    u = np.real(np.fft.ifft2(ThetaU))                        # partie réelle de l'inverse de Fourier
+    u = np.real(np.fft.ifft2(ThetaU))                       # partie réelle de l'inverse de Fourier
     v = np.real(np.fft.ifft2(ThetaV))                       # ~ y
     return(u,v)
