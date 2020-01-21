@@ -78,7 +78,7 @@ def plotDT(t):  # plot image vapeur d'eau
     plt.figure(figsize=(15,7.5))
     ax = plt.subplot(111)
     ax.set_aspect(1)
-    fig = ax.contourf(c.X,c.Y,var.DT_disp + var.DT_hist)#,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
+    fig = ax.contourf(c.X,c.Y,var.DT_disp + var.DT_hist + var.DT_cloud)#,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
     labels_title(fig, 'DT vapeur d eau '+str(t), "(K)")
     plt.show()
     

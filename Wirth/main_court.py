@@ -28,6 +28,7 @@ for itplot in range(c.Nitplot):                                 # itérations av
 
         av.calc_DT_histtp1()                                    # calcul de DT_hist
         av.calc_DT_disptp1()                                    # calcul de DT_disp
+        av.calc_DT_cloud()
         
     # plots
     plots.plots(temps)

@@ -25,3 +25,4 @@ DT_histtp1 = np.copy(DT_hist)                               # stockage t+dt
 w = np.zeros((c.Nx,c.Ny))                                              # vitesse verticale
 DT_disp = np.zeros((c.Nx,c.Ny))                             # DT_disp initialisé comme 0
 DT_disptp1 = np.zeros((c.Nx,c.Ny))                          # stockage t+dt
+DT_cloud = np.zeros((c.Nx,c.Ny))

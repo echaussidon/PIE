@@ -8,11 +8,11 @@ import numpy as np
 
 # à changer
 init = 2                                        # condition initiale de init_theta
-dt = 900                                        # pas de temps (s)
+dt = 1800                                        # pas de temps (s)
 Tend = 48*60*60                                 # temps final (but: 48h) (s)
 tplot = 3600                                    # fréquence des plots (un plot chaque tplot) (s)
-Nx = 256                                        # nombre de points en x
-Ny = 128                                        # ~ y
+Nx = 64                                        # nombre de points en x
+Ny = 64                                        # ~ y
 x0 = 0.                                         # premier point en x (m)
 x1 = 2048*1000                                  # dernier point en x (m)
 y0 = 0.                                         # ~ y (m)
@@ -65,4 +65,5 @@ f = 1e-4
 z_ref = -500                                    # niveau de la couche en dessous (m)
 gamma1 = -4e-3
 gamma2 = -8.5e-3
+DelZc = 500
 A = g * (Ns - Nt) / (theta_ref * Ns * Nt)       # constante défini arbitrairement

@@ -37,6 +37,11 @@ def calc_DT_disptp1():                                                  # avance
             xeval,yeval = cond_lim(xeval, yeval)                        
             var.DT_disptp1[i][j] = fDT_disp( yeval, xeval ) + var.w[i][j] * c.dt * c.gamma2 # terme source = vitesse verticale
     var.DT_disp = np.copy(var.DT_disptp1)
+    
+def calc_DT_cloud():
+    var.DT_cloud = np.zeros((c.Nx,c.Ny))
+    var.DT_cloud[var.DT_disp / c.gamma2 > c.DelZc] = -5
+        
 
 def cond_lim(xeval, yeval):
     if xeval < c.x0:                                          
