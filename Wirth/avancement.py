@@ -13,7 +13,7 @@ def calc_thetatp1():                                                    # avance
         for j in range(c.Ny):
             xeval = c.x[i] - var.alphax[i][j]                           # coordonnée de x du point d'évaluation de theta
             yeval = c.y[j] - var.alphay[i][j]                           # ~ y
-            ixeval,yeval = cond_lim(xeval, yeval)                       # conditions aux limites
+            xeval,yeval = cond_lim(xeval, yeval)                       # conditions aux limites
             var.thetatp1[i][j] = ftheta( yeval, xeval )                 # évaluation à Xo = Xn - alpha
     var.thetatm1 = np.copy(var.theta)                                   # mise à jour de theta à t-dt
     var.theta = np.copy(var.thetatp1)                                   # mise à jour de theta
