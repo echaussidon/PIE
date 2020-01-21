@@ -38,6 +38,8 @@ def plots(t):
         labels_title(fig, 'theta_'+str(t), "(K)")
         show_save("Simulations/{}/Theta/hsv_theta_dt{}_t{}.png".format(c.folder,c.dt,t))
      
+    if c.plot_WV:
+        plotDT(t)
     
     if c.plot_all:
         plt.figure(figsize=(15,22.5))
