@@ -24,19 +24,26 @@ def calcW():
     
     # interpolation des thetas précédents pour estimation de la dérivée totale de l'équation (10)
     f = interpolate.interp2d(c.y, c.x, theta_z_reftm1, kind='cubic')
-
+    vf=np.vectorize(f)
     # méthode semi-Lagrangienne à l'inverse pour calcul de w
-    for i in range(c.Nx):
-        for j in range(c.Ny):
-            xeval = c.x[i] - var.alphax_z_ref[i][j]                     # coordonnée de x du point d'évaluation de theta
-            yeval = c.y[j] - var.alphay_z_ref[i][j]                     # ~ y
-            if xeval < c.x0:                                            # si ce point est hors du maillage:
-                xeval = xeval + c.Lx                                    # rentrer le de l'autre côté
-            elif xeval > c.x1:                                          # = conditions limites périodiques
-                xeval = xeval - c.Lx
-            if yeval < c.y0:
-                yeval = yeval + c.Ly
-            elif yeval > c.y1:
-                yeval = yeval - c.Ly
-            # calcul de w à base de la dérivée temporelle (éq (10))
-            var.w[i][j] = c.g / c.Nt**2 / c.theta_ref * (f(yeval, xeval) - theta_z_ref[i][j]) / c.dt
+#    for i in range(c.Nx):
+#        for j in range(c.Ny):
+#            xeval = c.x[i] - var.alphax_z_ref[i][j]                     # coordonnée de x du point d'évaluation de theta
+#            yeval = c.y[j] - var.alphay_z_ref[i][j]                     # ~ y
+#            if xeval < c.x0:                                            # si ce point est hors du maillage:
+#                xeval = xeval + c.Lx                                    # rentrer le de l'autre côté
+#            elif xeval > c.x1:                                          # = conditions limites périodiques
+#                xeval = xeval - c.Lx
+#            if yeval < c.y0:
+#                yeval = yeval + c.Ly
+#            elif yeval > c.y1:
+#                yeval = yeval - c.Ly
+#            # calcul de w à base de la dérivée temporelle (éq (10))
+#            var.w[i][j] = c.g / c.Nt**2 / c.theta_ref * (f(yeval, xeval) - theta_z_ref[i][j]) / c.dt
+    
+    X=np.tile(c.x,(c.Ny,1)).transpose()
+    Y=np.tile(c.y, (c.Nx, 1))
+        
+    Xloc=np.remainder(X-var.alphax_z_ref, c.Lx)
+    Yloc=np.remainder(Y-var.alphay_z_ref, c.Ly)
+    var.w = c.g / c.Nt**2 / c.theta_ref * (vf(Yloc, Xloc) - theta_z_ref) / c.dt
