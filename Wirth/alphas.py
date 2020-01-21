@@ -15,7 +15,7 @@ def calc_alpha():
     fv = interpolate.interp2d(c.y, c.x, var.v, kind='linear')       # ~ v
     futm1 = interpolate.interp2d(c.y, c.x, var.utm1, kind='linear') # interpolation lineaire de utm1
     fvtm1 = interpolate.interp2d(c.y, c.x, var.vtm1, kind='linear') # ~ v
-    vfu=np.vectorize(fu)    
+    vfu=np.vectorize(fu)                            #La vectorisation permet d'utiliser les fonctions sur des matrices
     vfv=np.vectorize(fv)
     vfutm1=np.vectorize(futm1)    
     vfvtm1=np.vectorize(fvtm1)
@@ -35,26 +35,7 @@ def calc_alpha():
         
         var.alphax=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
         var.alphay=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
-    """                                            
-        for i in range(c.Nx):                                           # itération pour chaque point du maillage
-            for j in range(c.Ny):
-                xloc = c.x[i] - var.alphax[i][j]/2                      # coordonnée en x pour évaluation de la vitesse
-                yloc = c.y[j] - var.alphay[i][j]/2                      # ~ y
-                if xloc < c.x0:                                         # si ce point est hors du maillage:
-                    xloc = xloc + c.Lx                                  # rentrer le de l'autre côté
-                elif xloc > c.x1:                                       # = conditions limites périodiques
-                    xloc = xloc - c.Lx
-                if yloc < c.y0:
-                    yloc = yloc + c.Ly
-                elif yloc > c.y1:
-                    yloc = yloc - c.Ly
-                uloc = fu( yloc, xloc )                                 # évaluation de u à X - alpha/2
-                vloc = fv( yloc, xloc )                                 # ~ v
-                uloctm1 = futm1( yloc, xloc )                           # évaluation de utm1 à X - alpha/2
-                vloctm1 = fvtm1( yloc, xloc )                           # ~ v
-                var.alphax[i][j] = c.dt * (1.5 * uloc - 0.5 * uloctm1)  # nouvelle estimation de alphax
-                var.alphay[i][j] = c.dt * (1.5 * vloc - 0.5 * vloctm1)  # ~ y
-"""
+    
     var.utm1 = np.copy(var.u)                                           # mis à jour de utm1
     var.vtm1 = np.copy(var.v)                                           # ~ y
 
@@ -65,23 +46,24 @@ def calc_alpha_z_ref():
         fv = interpolate.interp2d(c.y, c.x, var.v_z_ref, kind='linear')       # ~ v
         futm1 = interpolate.interp2d(c.y, c.x, var.u_z_reftm1, kind='linear') # interpolation lineaire de utm1
         fvtm1 = interpolate.interp2d(c.y, c.x, var.v_z_reftm1, kind='linear') # ~ v
-        for i in range(c.Nx):                                           # itération pour chaque point du maillage
-            for j in range(c.Ny):
-                xloc = c.x[i] - var.alphax_z_ref[i][j]/2                      # coordonnée en x pour évaluation de la vitesse
-                yloc = c.y[j] - var.alphay_z_ref[i][j]/2                      # ~ y
-                if xloc < c.x0:                                         # si ce point est hors du maillage:
-                    xloc = xloc + c.Lx                                  # rentrer le de l'autre côté
-                elif xloc > c.x1:                                       # = conditions limites périodiques
-                    xloc = xloc - c.Lx
-                if yloc < c.y0:
-                    yloc = yloc + c.Ly
-                elif yloc > c.y1:
-                    yloc = yloc - c.Ly
-                uloc = fu( yloc, xloc )                                 # évaluation de u à X - alpha/2
-                vloc = fv( yloc, xloc )                                 # ~ v
-                uloctm1 = futm1( yloc, xloc )                           # évaluation de utm1 à X - alpha/2
-                vloctm1 = fvtm1( yloc, xloc )                           # ~ v
-                var.alphax_z_ref[i][j] = c.dt * (1.5 * uloc - 0.5 * uloctm1)  # nouvelle estimation de alphax
-                var.alphay_z_ref[i][j] = c.dt * (1.5 * vloc - 0.5 * vloctm1)  # ~ y
+        vfu=np.vectorize(fu)                                                    #La vectorisation permet d'utiliser les fonctions sur des matrices
+        vfv=np.vectorize(fv)
+        vfutm1=np.vectorize(futm1)    
+        vfvtm1=np.vectorize(fvtm1)
+        
+        X=np.tile(c.x,(c.Ny,1)).transpose()
+        Y=np.tile(c.y, (c.Nx, 1))
+        
+        Xloc=np.remainder(X-var.alphax_z_ref/2, c.Lx)
+        Yloc=np.remainder(Y-var.alphay_z_ref/2, c.Ly)
+        
+        Uloc = vfu(Yloc, Xloc)
+        Vloc = vfv(Yloc, Xloc)
+        Uloctm1 = vfutm1(Yloc, Xloc)
+        Vloctm1 = vfvtm1(Yloc, Xloc)
+        
+        var.alphax_z_ref=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
+        var.alphay_z_ref=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
+        
     var.u_z_reftm1 = np.copy(var.u_z_ref)                                           # mis à jour de utm1
     var.v_z_reftm1 = np.copy(var.v_z_ref)                                           # ~ y
