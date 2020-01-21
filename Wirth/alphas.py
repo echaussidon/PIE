@@ -7,9 +7,13 @@ from scipy import interpolate
 import constantes as c
 import variables as var
 import uv
+import time
+from scipy.interpolate import griddata
 
 def calc_alpha():
 
+    
+    print("Dans la fonction calc_alpha:")
     var.u,var.v = uv.vitesses(var.theta, False)                            # calcul des vitesses à instant t
     fu = interpolate.interp2d(c.y, c.x, var.u, kind='linear')       # interpolation lineaire de u
     fv = interpolate.interp2d(c.y, c.x, var.v, kind='linear')       # ~ v
@@ -19,22 +23,26 @@ def calc_alpha():
     vfv=np.vectorize(fv)
     vfutm1=np.vectorize(futm1)    
     vfvtm1=np.vectorize(fvtm1)
-
+    
     for a in range(2):              # 2 itérations pour calcul de alphas
-
         X=np.tile(c.x,(c.Ny,1)).transpose()
         Y=np.tile(c.y, (c.Nx, 1))
-        
+
         Xloc=np.remainder(X-var.alphax/2, c.Lx)
         Yloc=np.remainder(Y-var.alphay/2, c.Ly)
+
+        time_it = time.time()
         
         Uloc = vfu(Yloc, Xloc)
         Vloc = vfv(Yloc, Xloc)
         Uloctm1 = vfutm1(Yloc, Xloc)
         Vloctm1 = vfvtm1(Yloc, Xloc)
-        
+        print("     temps 1 itération: "+str(time.time()-time_it))
+
         var.alphax=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
         var.alphay=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
+        
+        
     
     var.utm1 = np.copy(var.u)                                           # mis à jour de utm1
     var.vtm1 = np.copy(var.v)                                           # ~ y
