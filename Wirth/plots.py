@@ -56,7 +56,7 @@ def plots(t):
         ax3.set_aspect(1)
         fig3 = ax3.contourf(c.X,c.Y,var.v,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
         labels_title(fig3, 'v_'+str(t), "(m/s)")
-        show_save("Simulations/{}/All/hsv_all_dt900_{}.png".format(c.folder,t))
+        show_save("Simulations/{}/All/all{}.png".format(c.folder,t))
 
 def plotW(t):   # plot vitesses verticales
     plt.figure(figsize=(15,7.5))
@@ -80,7 +80,7 @@ def plotDT(t):  # plot image vapeur d'eau
     ax.set_aspect(1)
     fig = ax.contourf(c.X,c.Y,var.DT_disp + var.DT_hist + var.DT_cloud)#,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
     labels_title(fig, 'DT vapeur d eau '+str(t), "(K)")
-    plt.show()
+    show_save("Simulations/{}/WV/{}.png".format(c.folder,t))
     
 def show_save(title):   # show plot, save under title if indicated in constantes
     if c.savefig:
