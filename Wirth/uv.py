@@ -5,12 +5,9 @@ Created on Mon Nov 25 16:41:43 2019
 import numpy as np
 import constantes as c
 
-
-
 def vitesses(theta, z_ref):                                 # calcule les vitesses à partir de theta, z_ref: False si tropopause, true si couche en dessous
-    Theta = np.fft.fft2(theta)                              # transformation de Fourier en 2D
-    ThetaU = np.copy(Theta)                                 # copie pour calcul de u
-    ThetaV = np.copy(Theta)                                 # copie pour calcul de v
+    ThetaU = np.fft.fft2(theta)                             # transformation de Fourier en 2D, utilisée pour le calcul de u
+    ThetaV = np.copy(ThetaU)                                # copie de theta, utilisée pour le calcul de v
     for i in range(c.Nx):
         for j in range(c.Ny):
             if z_ref:                                       # si sur z_ref:
@@ -23,6 +20,6 @@ def vitesses(theta, z_ref):                                 # calcule les vitess
             else:
                 ThetaV[i][j] = 0
                 ThetaU[i][j] = 0
-    u = np.real(np.fft.ifft2(ThetaU))                        # partie réelle de l'inverse de Fourier
+    u = np.real(np.fft.ifft2(ThetaU))                       # partie réelle de l'inverse de Fourier
     v = np.real(np.fft.ifft2(ThetaV))                       # ~ y
     return(u,v)
