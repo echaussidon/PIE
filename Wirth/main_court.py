@@ -7,24 +7,29 @@ import plots
 import alphas
 import save_data
 import avancement as av
-
+import w
 import tqdm as tqdm
 
-# plot initial
+# plots initials
 plots.plots(0)
 savefile, savetheta, savetime = save_data.initialisation(filename=c.savefilename)
 
 # avancement en temps
-for itplot in tqdm.tqdm(range(c.Nitplot)):                                 # itérations avec plot
+for itplot in tqdm.tqdm(range(c.Nitplot)):                      # itérations avec plot
     for itnoplot in range(c.Nitnoplot):                         # itérations sans plot
         it = itplot*c.Nitnoplot + itnoplot + 1                  # numéro d'itération
         temps = it*c.dt/60./60.                                 # temps en heures
 
         alphas.calc_alpha()                                     # calcul des alphas
-        alphas.calc_alpha_z_ref()
+        alphas.calc_alpha_z_ref()                               # calcul des alphas sur la couche en dessous
+        
+        av.calc_thetatp1()                                      # avancement en temps pour theta
+        w.calcW()                                               # calcul des vitesses verticales
 
-        av.calc_thetatp1()                                      # avancement en temps
-        av.calc_DT_histtp1()
+        av.calc_DT_histtp1()                                    # calcul de DT_hist
+        av.calc_DT_disptp1()                                    # calcul de DT_disp
+        av.calc_DT_cloud()
+        
     # plots
     plots.plots(temps)
     save_data.save_step(savetheta, savetime, temps, itplot)
