@@ -64,7 +64,7 @@ def plotW(t):   # plot vitesses verticales
     plt.figure(figsize=(15,7.5))
     ax = plt.subplot(111)
     ax.set_aspect(1)
-    fig = ax.contourf(c.X,c.Y,var.w)
+    fig = ax.contourf(c.X,c.Y,var.w,np.linspace(-0.05,0.05,50),cmap=plt.cm.hsv, vmin = -0.05, vmax = 0.05)
     labels_title(fig, 'w_'+str(t), "(m/s)")
     plt.show()
     
@@ -80,7 +80,9 @@ def plotDT(t):  # plot image vapeur d'eau
     plt.figure(figsize=(15,7.5))
     ax = plt.subplot(111)
     ax.set_aspect(1)
-    fig = ax.contourf(c.X,c.Y,var.DT_disp + var.DT_hist + var.DT_cloud)#,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
+    fig = ax.contourf(c.X,c.Y,var.DT_hist,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
+#    fig = ax.contourf(c.X,c.Y,var.DT_hist + var.DT_disp,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
+#    fig = ax.contourf(c.X,c.Y,var.DT_hist + var.DT_disp + var.DT_cloud,np.arange(-25,26),cmap=plt.cm.hsv, vmin = -25, vmax = 25)
     labels_title(fig, 'DT vapeur d eau '+str(t), "(K)")
     show_save("Simulations/{}/WV/{}.png".format(c.folder,t))
     
