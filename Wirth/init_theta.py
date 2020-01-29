@@ -4,7 +4,9 @@ Created on Mon Nov 25 16:35:14 2019
 """
 import numpy as np
 import constantes as c
+import time_m
 
+@time_m.time_measurement
 def theta_initialization(Nx,Ny,k):
     """Initialisation de la température
     k=1: sinusoïdale
@@ -16,19 +18,19 @@ def theta_initialization(Nx,Ny,k):
         for i in range(Nx):
             for j in range(Ny):
                 theta[i][j] = -20 * np.sin(np.pi * i / Nx)*np.sin(np.pi * j / Ny)
-    
+
     elif(k==2 or k==3):
-        delta = 0.12            # épaisseur de l'intrusion (0.12 donne le même rapport longueur-épaisseur que l'article)                                
+        delta = 0.12            # épaisseur de l'intrusion (0.12 donne le même rapport longueur-épaisseur que l'article)
         if (k == 2):            # intrusion horizontale (comme l'article)
             a_x = 0.1           # point où l'intrusion commence (0.1 -> 10%)
             a_y = 0.5-delta     # ~ y
-            
+
         elif (k == 3):          # intrusion verticale
             a_y = 0.1
             a_x = 0.5-delta
         L_x = 1-(delta+a_x)*2   # longueur de la partie droite en x
         L_y = 1-(delta+a_y)*2   # ~ y
-        
+
         #définition de theta_x
         theta_x = np.zeros(Nx)
         u = 0
@@ -51,7 +53,7 @@ def theta_initialization(Nx,Ny,k):
         v = Nx
         for i in range(u,v):
             theta_x[i]=0
-        
+
         #définition de theta_y
         theta_y = np.zeros(Ny)
         u = 0
@@ -74,16 +76,16 @@ def theta_initialization(Nx,Ny,k):
         v = Ny
         for i in range(u,v):
             theta_y[i]=0
-        
-        #définition de theta 
+
+        #définition de theta
         for i in range(Nx):
             for j in range(Ny):
                 theta[i][j] = -20 * theta_x[i] * theta_y[j]
-    
+
     elif(k==4):
         ampl = -20;
         delta_y = 0.12      # épaisseur de l'intrusion (0.12 donne le même rapport longueur-épaisseur que l'article)
-        delta_x = delta_y * c.Ly/c.Lx                               
+        delta_x = delta_y * c.Ly/c.Lx
         a_x = 0.1           # point où l'intrusion commence (0.1 -> 10%)
         a_y = 0.5-delta_y     # ~ y
         L_x = 1-(delta_x+a_x)*2   # longueur de la partie droite en x

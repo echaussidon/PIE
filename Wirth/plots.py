@@ -6,8 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import constantes as c
 import variables as var
+import time_m
 
-def plots(t):    
+@time_m.time_measurement
+def plots(t):
     if c.plot_vitesses:
         plt.figure(figsize=(15,7.5))
         ax = plt.subplot(111)
@@ -21,10 +23,9 @@ def plots(t):
         if c.savefig:
             plt.savefig("Simulations/{}/U/hsv_U_dt{}_t{}.png".format(c.folder,c.dt,t))
             print("save U")
+        if c.showfig:
             plt.show()
-        else:
-            plt.show()
-        
+
         plt.figure(figsize=(15,7.5))
         ax = plt.subplot(111)
         ax.set_aspect(1)
@@ -37,10 +38,9 @@ def plots(t):
         if c.savefig:
             plt.savefig("Simulations/{}/V/hsv_V_dt{}_t{}.png".format(c.folder,c.dt,t))
             print("save V")
+        if c.showfig:
             plt.show()
-        else:
-            plt.show()   
-    
+
     if c.plot_theta:
         plt.figure(figsize=(15,7.5))
         ax = plt.subplot(111)
@@ -54,10 +54,9 @@ def plots(t):
         if c.savefig:
             plt.savefig("Simulations/{}/Theta/hsv_theta_dt{}_t{}.png".format(c.folder,c.dt,t))
             print("save theta")
+        if c.showfig:
             plt.show()
-        else:
-            plt.show()      
-    
+
     if c.plot_all:
         plt.figure(figsize=(15,22.5))
         ax1 = plt.subplot(311)
@@ -87,6 +86,5 @@ def plots(t):
         if c.savefig:
             plt.savefig("Simulations/{}/All/hsv_all_dt900_{}.png".format(c.folder,t))
             print("save V")
-            plt.show()
-        else:
+        if c.showfig:
             plt.show()
