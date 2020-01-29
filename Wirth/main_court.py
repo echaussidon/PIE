@@ -19,7 +19,9 @@ for itplot in tqdm.tqdm(range(c.Nitplot)):                      # itérations av
     for itnoplot in range(c.Nitnoplot):                         # itérations sans plot
         it = itplot*c.Nitnoplot + itnoplot + 1                  # numéro d'itération
         temps = it*c.dt/60./60.                                 # temps en heures
-        print("\nit = {} / {}, t = {} h".format(it, c.Nitplot*c.Nitnoplot, temps))’
+
+        if c.print_time_measurement :
+            print("\nit = {} / {}, t = {} h".format(it, c.Nitplot*c.Nitnoplot, temps))
 
         alphas.calc_alpha()                                     # calcul des alphas
         alphas.calc_alpha_z_ref()                               # calcul des alphas

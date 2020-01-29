@@ -10,6 +10,7 @@ def ma_function():
 
 import functools
 import time
+import constantes as c
 
 def time_measurement(func):
     """Timestamp decorator for dedicated functions"""
@@ -20,6 +21,7 @@ def time_measurement(func):
         elapsed = time.time() - start
         mlsec = repr(elapsed).split('.')[1][:3]
         readable = time.strftime("%H:%M:%S.{}".format(mlsec), time.gmtime(elapsed))
-        print('Function "{}": {} sec'.format(func.__name__, readable))
+        if c.print_time_measurement :
+            print('Function "{}": {} sec'.format(func.__name__, readable))
         return result
     return wrapper

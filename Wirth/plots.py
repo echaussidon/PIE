@@ -62,6 +62,8 @@ def plots(t):
         labels_title(fig3, 'v_'+str(t), "(m/s)")
         show_save("Simulations/{}/All/all{}.png".format(c.folder,t))
 
+    plt.close('all')
+
 def plotW(t):   # plot vitesses verticales
     plt.figure(figsize=(15,7.5))
     ax = plt.subplot(111)
@@ -89,7 +91,7 @@ def plotDT(t):  # plot image vapeur d'eau
 def show_save(title):   # show plot, save under title if indicated in constantes
     if c.savefig:
         plt.savefig(title)
-        print("save {}".format(title))
+        #print("save {}".format(title))
     if c.showfig:
         plt.show()
 

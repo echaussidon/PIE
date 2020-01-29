@@ -18,13 +18,14 @@ x1 = 2048*1000                                  # dernier point en x (m)
 y0 = 0.                                         # ~ y (m)
 y1 = 1024*1000                                  # ~ y (m)
 folder = "folder"                               # dossier pour sauver les figures
-savefig = 0                                     # sauver les figures
-showfig = 1                                     # afficher les figures
+savefig = 1                                     # sauver les figures
+showfig = 0                                     # afficher les figures
 plot_theta = 1                                  # faire le plot de theta ou non
 plot_vitesses = 1                               # ~ vitesses
 plot_WV = 1                                     # ~ image vapeur d'eau
 plot_all = 0                                    # tout sur une figure
-savefilename = "simulation_ini_0.nc"
+savefilename = "simulation_ini_0.nc"            # nom du fichier où son sauvegarder les données en netcdf
+print_time_measurement = False                  # affiche le temps d'execution de chaque fonction
 
 # à ne pas changer
 Nit = int(Tend/dt)                              # nombre d'itérations
