@@ -34,8 +34,8 @@ def vitesses(theta, z_ref):                                   # calcule les vite
     ThetaV = np.copy(ThetaU)                                  # copie de theta, utilisée pour le calcul de v
 
     factor_z = np.exp(-c.Nt * K * np.abs(c.z_ref) / c.f)
-    ThetaV=np.where(K != 0, ThetaV*1j*k_mat*c.A/K, np.zeros((c.Nx,c.Ny)))
-    ThetaU=np.where(K != 0, -ThetaU*1j*l_mat*c.A/K, np.zeros((c.Nx,c.Ny)))
+    ThetaV = np.where(K != 0, ThetaV*1j*k_mat*c.A/K, np.zeros((c.Nx,c.Ny))) #le runetime qui peut s'afficher n'est pas très important (car l'endroit ou l'erreur est déclarée, on ne conserve pas la valeur)
+    ThetaU = np.where(K != 0, -ThetaU*1j*l_mat*c.A/K, np.zeros((c.Nx,c.Ny)))
 
     if(z_ref):
         ThetaV = ThetaV*factor_z
