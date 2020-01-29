@@ -35,3 +35,29 @@ def calc_DT_histtp1():
 
     var.DT_histtp1 = vfDT_hist(Yeval,Xeval)
     var.DT_hist = np.copy(var.DT_histtp1)                                   # mis à jour de theta
+
+
+def calc_DT_disptp1():                                                  # avancement de DT_disp
+    fDT_disp = interpolate.interp2d(c.y, c.x, var.DT_disp, kind='cubic')
+    for i in range(c.Nx):
+        for j in range(c.Ny):
+            xeval = c.x[i] - var.alphax_z_ref[i][j]                     # couche en dessous, donc autres vitesses et autres alphas
+            yeval = c.y[j] - var.alphay_z_ref[i][j]
+            xeval,yeval = cond_lim(xeval, yeval)
+            var.DT_disptp1[i][j] = fDT_disp( yeval, xeval ) + var.w[i][j] * c.dt * c.gamma2 # terme source = vitesse verticale
+    var.DT_disp = np.copy(var.DT_disptp1)
+
+def calc_DT_cloud():
+    var.DT_cloud = np.zeros((c.Nx,c.Ny))
+    var.DT_cloud[var.DT_disp / c.gamma2 > c.DelZc] = -5
+        
+def cond_lim(xeval, yeval):
+    if xeval < c.x0:
+        xeval = xeval + c.Lx
+    elif xeval > c.x1:
+        xeval = xeval - c.Lx
+    if yeval < c.y0:
+        yeval = yeval + c.Ly
+    elif yeval > c.y1:
+        yeval = yeval - c.Ly
+    return xeval,yeval
