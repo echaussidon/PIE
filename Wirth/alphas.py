@@ -31,13 +31,22 @@ def calc_alpha():
         Xloc=np.remainder(X-var.alphax/2, c.Lx)
         Yloc=np.remainder(Y-var.alphay/2, c.Ly)
 
-        time_it = time.time()
         
+        time_it = time.time()
+        """
+        grid_x, grid_y = np.meshgrid(c.x,c.y)
+        points = np.vstack((np.matrix.flatten(Xloc),np.matrix.flatten(Yloc))).transpose()
+        print(points)
+        values = np.matrix.flatten(var.u)
+        Uloc = griddata(points, values, (grid_x, grid_y), method='linear')
+        print(Uloc.shape)
+        """
         Uloc = vfu(Yloc, Xloc)
+        print("     temps 1 itération: "+str(time.time()-time_it))
         Vloc = vfv(Yloc, Xloc)
         Uloctm1 = vfutm1(Yloc, Xloc)
         Vloctm1 = vfvtm1(Yloc, Xloc)
-        print("     temps 1 itération: "+str(time.time()-time_it))
+        
 
         var.alphax=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
         var.alphay=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
