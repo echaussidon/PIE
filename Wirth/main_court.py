@@ -5,38 +5,37 @@ Created on Tue Nov 12 13:45:56 2019
 import constantes as c
 import plots
 import alphas
-import avancement as av
-import time
+import save_data
+import avancement
+import w
+import tqdm as tqdm
 
-# plot initial
+# plots initials
 plots.plots(0)
+savefile, savetheta, savetime = save_data.initialisation(filename=c.savefilename)
 
 # avancement en temps
-for itplot in range(c.Nitplot):                                 # itérations avec plot
+for itplot in tqdm.tqdm(range(c.Nitplot)):                      # itérations avec plot
     for itnoplot in range(c.Nitnoplot):                         # itérations sans plot
-        
-        print("\n\n\n")
         it = itplot*c.Nitnoplot + itnoplot + 1                  # numéro d'itération
         temps = it*c.dt/60./60.                                 # temps en heures
-        print("it = {}, t = {}".format(it,temps))               # print it et temps
-        
-        
-        print("calcul des alphas")
-        start_alpha = time.time()
-        alphas.calc_alpha() 
-        print("temps calcul alphas: " +  str(time.time()-start_alpha))                               # calcul des alphas
-        
-        
-        start_alpha_z_ref = time.time()        
-        alphas.calc_alpha_z_ref()
-        print("temps calcul alphas_z_ref: " +  str(time.time()-start_alpha_z_ref))                               # calcul des alphas        
-        
-        print("avancement en temps")                                
-        start_calc_thetatp1 = time.time()
-        av.calc_thetatp1()                                      # avancement en temps
-        print("temps calcul thetatp1: " +  str(time.time()-start_calc_thetatp1))
-        start_calc_DT_histtp1 = time.time()        
-        av.calc_DT_histtp1()
-        print("temps calcul DT_histtp1: " +  str(time.time()-start_calc_DT_histtp1))
+
+        if c.print_time_measurement :
+            print("\nit = {} / {}, t = {} h".format(it, c.Nitplot*c.Nitnoplot, temps))
+
+        alphas.calc_alpha()                                     # calcul des alphas
+        alphas.calc_alpha_z_ref()                               # calcul des alphas
+
+        avancement.calc_thetatp1()
+
+        w.calcW()                                                # calcul des vitesses verticales
+
+        avancement.calc_DT_histtp1()                             # calcul de DT_hist
+        avancement.calc_DT_disptp1()                             # calcul de DT_disp
+        avancement.calc_DT_cloud()                               # avancement en temps
+
     # plots
     plots.plots(temps)
+    save_data.save_step(savetheta, savetime, temps, itplot)
+
+save_data.close_file(savefile)
