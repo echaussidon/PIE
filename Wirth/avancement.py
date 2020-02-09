@@ -7,11 +7,13 @@ from scipy import interpolate
 import constantes as c
 import variables as var
 import time_m
+from scipy.interpolate import RectBivariateSpline
+
 
 @time_m.time_measurement
 def calc_thetatp1():
-    ftheta = interpolate.interp2d(c.y, c.x, var.theta, kind='cubic')        # interpolation cubique de theta
-    vftheta=np.vectorize(ftheta)
+    
+    ftheta = RectBivariateSpline(c.x, c.y, var.theta)
 
     X=np.tile(c.x,(c.Ny,1)).transpose()
     Y=np.tile(c.y, (c.Nx, 1))
@@ -19,13 +21,12 @@ def calc_thetatp1():
     Xeval = np.remainder(X-var.alphax, c.Lx)                                #np.remainder: reste de la division euclidienne -> correspond aux cond. lim. périodiques.
     Yeval = np.remainder(Y-var.alphay, c.Ly)                                #Xeval et Yeval sont les coordonnées d'évaluation de theta
 
-    var.thetatp1 = vftheta(Yeval,Xeval)
+    var.thetatp1 = ftheta(Xeval,Yeval, grid = False)
     var.theta = np.copy(var.thetatp1)                                       # mis à jour de theta
 
 @time_m.time_measurement
 def calc_DT_histtp1():
-    fDT_hist = interpolate.interp2d(c.y, c.x, var.DT_hist, kind='cubic')    # interpolation cubique de theta
-    vfDT_hist=np.vectorize(fDT_hist)
+    fDT_hist = RectBivariateSpline(c.x, c.y, var.DT_hist)    # interpolation de theta
 
     X=np.tile(c.x,(c.Ny,1)).transpose()
     Y=np.tile(c.y, (c.Nx, 1))
@@ -33,7 +34,7 @@ def calc_DT_histtp1():
     Xeval = np.remainder(X-var.alphax_z_ref, c.Lx)
     Yeval = np.remainder(Y-var.alphay_z_ref, c.Ly)
 
-    var.DT_histtp1 = vfDT_hist(Yeval,Xeval)
+    var.DT_histtp1 = fDT_hist(Xeval,Yeval, grid = False)
     var.DT_hist = np.copy(var.DT_histtp1)                                   # mis à jour de theta
 
 
