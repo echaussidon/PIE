@@ -6,7 +6,7 @@ import constantes as c
 import plots
 import alphas
 import save_data
-import avancement as av
+import avancement
 import w
 import tqdm as tqdm
 
@@ -20,16 +20,20 @@ for itplot in tqdm.tqdm(range(c.Nitplot)):                      # itérations av
         it = itplot*c.Nitnoplot + itnoplot + 1                  # numéro d'itération
         temps = it*c.dt/60./60.                                 # temps en heures
 
-        alphas.calc_alpha()                                     # calcul des alphas
-        alphas.calc_alpha_z_ref()                               # calcul des alphas sur la couche en dessous
-        
-        av.calc_thetatp1()                                      # avancement en temps pour theta
-        w.calcW()                                               # calcul des vitesses verticales
+        if c.print_time_measurement :
+            print("\nit = {} / {}, t = {} h".format(it, c.Nitplot*c.Nitnoplot, temps))
 
-        av.calc_DT_histtp1()                                    # calcul de DT_hist
-        av.calc_DT_disptp1()                                    # calcul de DT_disp
-        av.calc_DT_cloud()
-        
+        alphas.calc_alpha()                                     # calcul des alphas
+        alphas.calc_alpha_z_ref()                               # calcul des alphas
+
+        avancement.calc_thetatp1()
+
+        w.calcW()                                                # calcul des vitesses verticales
+
+        avancement.calc_DT_histtp1()                             # calcul de DT_hist
+        avancement.calc_DT_disptp1()                             # calcul de DT_disp
+        avancement.calc_DT_cloud()                               # avancement en temps
+
     # plots
     plots.plots(temps)
     save_data.save_step(savetheta, savetime, temps, itplot)

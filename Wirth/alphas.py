@@ -3,66 +3,64 @@
 Created on Mon Nov 25 16:59:01 2019
 """
 import numpy as np
-from scipy import interpolate
 import constantes as c
 import variables as var
 import uv
+import time_m
+from scipy.interpolate import RectBivariateSpline
 
-def calc_alpha():                                                       # calcul des déplacements alpha sur tropopause
-    var.u,var.v = uv.vitesses(var.theta, False)                         # calcul des vitesses à instant t
-    fu = interpolate.interp2d(c.y, c.x, var.u, kind='linear')           # interpolation lineaire de u
-    fv = interpolate.interp2d(c.y, c.x, var.v, kind='linear')           # ~ v
-    futm1 = interpolate.interp2d(c.y, c.x, var.utm1, kind='linear')     # interpolation lineaire de utm1
-    fvtm1 = interpolate.interp2d(c.y, c.x, var.vtm1, kind='linear')     # ~ v
 
-    for a in range(2):                                                  # 2 itérations pour calcul de alphas
-        for i in range(c.Nx):                                           # itération pour chaque point du maillage
-            for j in range(c.Ny):
-                xloc = c.x[i] - var.alphax[i][j]/2                      # coordonnée en x pour évaluation de la vitesse
-                yloc = c.y[j] - var.alphay[i][j]/2                      # ~ y
-                if xloc < c.x0:                                         # si ce point est hors du maillage:
-                    xloc = xloc + c.Lx                                  # rentrer le de l'autre côté
-                elif xloc > c.x1:                                       # = conditions limites périodiques
-                    xloc = xloc - c.Lx
-                if yloc < c.y0:
-                    yloc = yloc + c.Ly
-                elif yloc > c.y1:
-                    yloc = yloc - c.Ly
-                uloc = fu( yloc, xloc )                                 # évaluation de u à X - alpha/2
-                vloc = fv( yloc, xloc )                                 # ~ v
-                uloctm1 = futm1( yloc, xloc )                           # évaluation de utm1 à X - alpha/2
-                vloctm1 = fvtm1( yloc, xloc )                           # ~ v
-                var.alphax[i][j] = c.dt * (1.5 * uloc - 0.5 * uloctm1)  # nouvelle estimation de alphax
-                var.alphay[i][j] = c.dt * (1.5 * vloc - 0.5 * vloctm1)  # ~ y
+@time_m.time_measurement
+def calc_alpha():
+    var.u,var.v = uv.vitesses(var.theta, False)                                # calcul des vitesses à instant t
+    
+    fu = RectBivariateSpline(c.x, c.y, var.u)                       #interpolation de u
+    fv = RectBivariateSpline(c.x, c.y, var.v)
+    futm1 = RectBivariateSpline(c.x, c.y, var.utm1)
+    fvtm1 = RectBivariateSpline(c.x, c.y, var.vtm1)
+        
+        
+    for a in range(2):   
+        X=np.tile(c.x,(c.Ny,1)).transpose()             #construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
+        Y=np.tile(c.y, (c.Nx, 1))                       #construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
+        Xloc=np.remainder(X-var.alphax/2, c.Lx)         #Condition limite utilisant le reste d'une division euclidienne
+        Yloc=np.remainder(Y-var.alphay/2, c.Ly)         # Le point rentre de l'autre côté du maillage
+        
+        Uloc = fu(Xloc, Yloc, grid = False)
+        Vloc = fv(Xloc, Yloc, grid = False)
+        Uloctm1 = futm1(Xloc, Yloc, grid = False)
+        Vloctm1 = fvtm1(Xloc, Yloc, grid = False)
 
-    var.utm1 = np.copy(var.u)                                           # mis à jour de utm1
-    var.vtm1 = np.copy(var.v)                                           # ~ y
+        var.alphax=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
+        var.alphay=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
 
-def calc_alpha_z_ref():                                                 # calcul des déplacements alpha sur z_ref
-    for a in range(2):                                                 
-        var.u_z_ref,var.v_z_ref = uv.vitesses(var.theta, True)          # autres vitesses                    
-        fu = interpolate.interp2d(c.y, c.x, var.u_z_ref, kind='linear')      
-        fv = interpolate.interp2d(c.y, c.x, var.v_z_ref, kind='linear')       
-        futm1 = interpolate.interp2d(c.y, c.x, var.u_z_reftm1, kind='linear') 
-        fvtm1 = interpolate.interp2d(c.y, c.x, var.v_z_reftm1, kind='linear')
-        for i in range(c.Nx):                                           
-            for j in range(c.Ny):
-                xloc = c.x[i] - var.alphax_z_ref[i][j]/2                     
-                yloc = c.y[j] - var.alphay_z_ref[i][j]/2                     
-                if xloc < c.x0:                                        
-                    xloc = xloc + c.Lx                                  
-                elif xloc > c.x1:                                       
-                    xloc = xloc - c.Lx
-                if yloc < c.y0:
-                    yloc = yloc + c.Ly
-                elif yloc > c.y1:
-                    yloc = yloc - c.Ly
+    var.utm1 = np.copy(var.u)                                                 # mis à jour de utm1
+    var.vtm1 = np.copy(var.v)                                                 # ~ y
 
-                uloc = fu( yloc, xloc )                                
-                vloc = fv( yloc, xloc )                                 
-                uloctm1 = futm1( yloc, xloc )                          
-                vloctm1 = fvtm1( yloc, xloc )                          
-                var.alphax_z_ref[i][j] = c.dt * (1.5 * uloc - 0.5 * uloctm1) # autres alphas
-                var.alphay_z_ref[i][j] = c.dt * (1.5 * vloc - 0.5 * vloctm1)  
-    var.u_z_reftm1 = np.copy(var.u_z_ref)                                          
-    var.v_z_reftm1 = np.copy(var.v_z_ref)                                          
+@time_m.time_measurement
+def calc_alpha_z_ref():
+    for a in range(2):                                                        # 2 itérations pour calcul de alphas
+        var.u_z_ref, var.v_z_ref = uv.vitesses(var.theta, True)                # calcul des vitesses à instant t
+        
+        fu = RectBivariateSpline(c.x, c.y, var.u_z_ref)
+        fv = RectBivariateSpline(c.x, c.y, var.v_z_ref)
+        futm1 = RectBivariateSpline(c.x, c.y, var.u_z_reftm1)
+        fvtm1 = RectBivariateSpline(c.x, c.y, var.v_z_reftm1)
+        
+
+        X=np.tile(c.x,(c.Ny,1)).transpose()             #construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
+        Y=np.tile(c.y, (c.Nx, 1))                       #construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
+
+        Xloc=np.remainder(X-var.alphax_z_ref/2, c.Lx)       #Condition limite utilisant le reste d'une division euclidienne
+        Yloc=np.remainder(Y-var.alphay_z_ref/2, c.Ly)       # Le point rentre de l'autre côté du maillage
+
+        Uloc = fu(Xloc, Yloc, grid = False)
+        Vloc = fv(Xloc, Yloc, grid = False)
+        Uloctm1 = futm1(Xloc, Yloc, grid = False)
+        Vloctm1 = fvtm1(Xloc, Yloc, grid = False)
+
+        var.alphax_z_ref=c.dt* (1.5 * Uloc - 0.5 * Uloctm1)
+        var.alphay_z_ref=c.dt* (1.5 * Vloc - 0.5 * Vloctm1)
+
+    var.u_z_reftm1 = np.copy(var.u_z_ref)                                     # mis à jour de utm1
+    var.v_z_reftm1 = np.copy(var.v_z_ref)                                     # ~ y

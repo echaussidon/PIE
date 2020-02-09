@@ -6,47 +6,56 @@ import numpy as np
 from scipy import interpolate
 import constantes as c
 import variables as var
+import time_m
+from scipy.interpolate import RectBivariateSpline
 
-def calc_thetatp1():                                                    # avancement de theta
-    ftheta = interpolate.interp2d(c.y, c.x, var.theta, kind='cubic')    # interpolation cubique de theta
-    for i in range(c.Nx):                                               # itération pour chaque point du maillage
-        for j in range(c.Ny):
-            xeval = c.x[i] - var.alphax[i][j]                           # coordonnée de x du point d'évaluation de theta
-            yeval = c.y[j] - var.alphay[i][j]                           # ~ y
-            xeval,yeval = cond_lim(xeval, yeval)                       # conditions aux limites
-            var.thetatp1[i][j] = ftheta( yeval, xeval )                 # évaluation à Xo = Xn - alpha
-    var.thetatm1 = np.copy(var.theta)                                   # mise à jour de theta à t-dt
-    var.theta = np.copy(var.thetatp1)                                   # mise à jour de theta
+
+@time_m.time_measurement
+def calc_thetatp1():
     
-def calc_DT_histtp1():                                                  # avancement de DT_hist
-    fDT_hist = interpolate.interp2d(c.y, c.x, var.DT_hist, kind='cubic')    
-    for i in range(c.Nx):                                               
-        for j in range(c.Ny):
-            xeval = c.x[i] - var.alphax_z_ref[i][j]                     # couche en dessous, donc autres vitesses et autres alphas
-            yeval = c.y[j] - var.alphay_z_ref[i][j]                     
-            xeval,yeval = cond_lim(xeval, yeval)                        
-            var.DT_histtp1[i][j] = fDT_hist( yeval, xeval )             # pas de terme de source
-    var.DT_hist = np.copy(var.DT_histtp1)                                   
-    
+    ftheta = RectBivariateSpline(c.x, c.y, var.theta)
+
+    X=np.tile(c.x,(c.Ny,1)).transpose()
+    Y=np.tile(c.y, (c.Nx, 1))
+
+    Xeval = np.remainder(X-var.alphax, c.Lx)                                #np.remainder: reste de la division euclidienne -> correspond aux cond. lim. périodiques.
+    Yeval = np.remainder(Y-var.alphay, c.Ly)                                #Xeval et Yeval sont les coordonnées d'évaluation de theta
+
+    var.thetatp1 = ftheta(Xeval,Yeval, grid = False)
+    var.theta = np.copy(var.thetatp1)                                       # mis à jour de theta
+
+@time_m.time_measurement
+def calc_DT_histtp1():
+    fDT_hist = RectBivariateSpline(c.x, c.y, var.DT_hist)    # interpolation de theta
+
+    X=np.tile(c.x,(c.Ny,1)).transpose()
+    Y=np.tile(c.y, (c.Nx, 1))
+
+    Xeval = np.remainder(X-var.alphax_z_ref, c.Lx)
+    Yeval = np.remainder(Y-var.alphay_z_ref, c.Ly)
+
+    var.DT_histtp1 = fDT_hist(Xeval,Yeval, grid = False)
+    var.DT_hist = np.copy(var.DT_histtp1)                                   # mis à jour de theta
+
+
 def calc_DT_disptp1():                                                  # avancement de DT_disp
-    fDT_disp = interpolate.interp2d(c.y, c.x, var.DT_disp, kind='cubic')    
-    for i in range(c.Nx):                                               
+    fDT_disp = interpolate.interp2d(c.y, c.x, var.DT_disp, kind='cubic')
+    for i in range(c.Nx):
         for j in range(c.Ny):
             xeval = c.x[i] - var.alphax_z_ref[i][j]                     # couche en dessous, donc autres vitesses et autres alphas
-            yeval = c.y[j] - var.alphay_z_ref[i][j]                          
-            xeval,yeval = cond_lim(xeval, yeval)                        
+            yeval = c.y[j] - var.alphay_z_ref[i][j]
+            xeval,yeval = cond_lim(xeval, yeval)
             var.DT_disptp1[i][j] = fDT_disp( yeval, xeval ) + var.w[i][j] * c.dt * c.gamma2 # terme source = vitesse verticale
     var.DT_disp = np.copy(var.DT_disptp1)
-    
+
 def calc_DT_cloud():
     var.DT_cloud = np.zeros((c.Nx,c.Ny))
     var.DT_cloud[var.DT_disp / c.gamma2 > c.DelZc] = -5
         
-
 def cond_lim(xeval, yeval):
-    if xeval < c.x0:                                          
-        xeval = xeval + c.Lx                                    
-    elif xeval > c.x1:                                         
+    if xeval < c.x0:
+        xeval = xeval + c.Lx
+    elif xeval > c.x1:
         xeval = xeval - c.Lx
     if yeval < c.y0:
         yeval = yeval + c.Ly
