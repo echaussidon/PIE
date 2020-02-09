@@ -14,17 +14,17 @@ from scipy.interpolate import RectBivariateSpline
 def calc_alpha():
     var.u,var.v = uv.vitesses(var.theta, False)                                # calcul des vitesses à instant t
     
-    fu = RectBivariateSpline(c.x, c.y, var.u)
+    fu = RectBivariateSpline(c.x, c.y, var.u)                       #interpolation de u
     fv = RectBivariateSpline(c.x, c.y, var.v)
     futm1 = RectBivariateSpline(c.x, c.y, var.utm1)
     fvtm1 = RectBivariateSpline(c.x, c.y, var.vtm1)
         
         
     for a in range(2):   
-        X=np.tile(c.x,(c.Ny,1)).transpose()
-        Y=np.tile(c.y, (c.Nx, 1))
-        Xloc=np.remainder(X-var.alphax/2, c.Lx)
-        Yloc=np.remainder(Y-var.alphay/2, c.Ly)
+        X=np.tile(c.x,(c.Ny,1)).transpose()             #construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
+        Y=np.tile(c.y, (c.Nx, 1))                       #construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
+        Xloc=np.remainder(X-var.alphax/2, c.Lx)         #Condition limite utilisant le reste d'une division euclidienne
+        Yloc=np.remainder(Y-var.alphay/2, c.Ly)         # Le point rentre de l'autre côté du maillage
         
         Uloc = fu(Xloc, Yloc, grid = False)
         Vloc = fv(Xloc, Yloc, grid = False)
@@ -48,11 +48,11 @@ def calc_alpha_z_ref():
         fvtm1 = RectBivariateSpline(c.x, c.y, var.v_z_reftm1)
         
 
-        X=np.tile(c.x,(c.Ny,1)).transpose()
-        Y=np.tile(c.y, (c.Nx, 1))
+        X=np.tile(c.x,(c.Ny,1)).transpose()             #construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
+        Y=np.tile(c.y, (c.Nx, 1))                       #construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
 
-        Xloc=np.remainder(X-var.alphax_z_ref/2, c.Lx)
-        Yloc=np.remainder(Y-var.alphay_z_ref/2, c.Ly)
+        Xloc=np.remainder(X-var.alphax_z_ref/2, c.Lx)       #Condition limite utilisant le reste d'une division euclidienne
+        Yloc=np.remainder(Y-var.alphay_z_ref/2, c.Ly)       # Le point rentre de l'autre côté du maillage
 
         Uloc = fu(Xloc, Yloc, grid = False)
         Vloc = fv(Xloc, Yloc, grid = False)
