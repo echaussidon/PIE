@@ -28,11 +28,9 @@ for itplot in tqdm.tqdm(range(c.Nitplot)):                      # itérations av
 
         avancement.calc_thetatp1()
 
-        w.calcW()                                                # calcul des vitesses verticales
+        w.calcW()                                               # calcul des vitesses verticales
 
-        avancement.calc_DT_histtp1()                             # calcul de DT_hist
-        avancement.calc_DT_disptp1()                             # calcul de DT_disp
-        avancement.calc_DT_cloud()                               # avancement en temps
+        avancement.calc_DT()                                    # calcul image vapeur d'eau
 
     # plots
     plots.plots(temps)

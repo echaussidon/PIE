@@ -19,12 +19,9 @@ def calc_alpha():
     futm1 = RectBivariateSpline(c.x, c.y, var.utm1)
     fvtm1 = RectBivariateSpline(c.x, c.y, var.vtm1)
         
-        
     for a in range(2):   
-        X=np.tile(c.x,(c.Ny,1)).transpose()             #construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
-        Y=np.tile(c.y, (c.Nx, 1))                       #construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
-        Xloc=np.remainder(X-var.alphax/2, c.Lx)         #Condition limite utilisant le reste d'une division euclidienne
-        Yloc=np.remainder(Y-var.alphay/2, c.Ly)         # Le point rentre de l'autre côté du maillage
+        Xloc=np.remainder(c.X-var.alphax/2, c.Lx)         #Condition limite utilisant le reste d'une division euclidienne
+        Yloc=np.remainder(c.Y-var.alphay/2, c.Ly)         # Le point rentre de l'autre côté du maillage
         
         Uloc = fu(Xloc, Yloc, grid = False)
         Vloc = fv(Xloc, Yloc, grid = False)
@@ -39,20 +36,16 @@ def calc_alpha():
 
 @time_m.time_measurement
 def calc_alpha_z_ref():
+    var.u_z_ref, var.v_z_ref = uv.vitesses(var.theta, True)                # calcul des vitesses à instant t
+        
+    fu = RectBivariateSpline(c.x, c.y, var.u_z_ref)
+    fv = RectBivariateSpline(c.x, c.y, var.v_z_ref)
+    futm1 = RectBivariateSpline(c.x, c.y, var.u_z_reftm1)
+    fvtm1 = RectBivariateSpline(c.x, c.y, var.v_z_reftm1)
+    
     for a in range(2):                                                        # 2 itérations pour calcul de alphas
-        var.u_z_ref, var.v_z_ref = uv.vitesses(var.theta, True)                # calcul des vitesses à instant t
-        
-        fu = RectBivariateSpline(c.x, c.y, var.u_z_ref)
-        fv = RectBivariateSpline(c.x, c.y, var.v_z_ref)
-        futm1 = RectBivariateSpline(c.x, c.y, var.u_z_reftm1)
-        fvtm1 = RectBivariateSpline(c.x, c.y, var.v_z_reftm1)
-        
-
-        X=np.tile(c.x,(c.Ny,1)).transpose()             #construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
-        Y=np.tile(c.y, (c.Nx, 1))                       #construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
-
-        Xloc=np.remainder(X-var.alphax_z_ref/2, c.Lx)       #Condition limite utilisant le reste d'une division euclidienne
-        Yloc=np.remainder(Y-var.alphay_z_ref/2, c.Ly)       # Le point rentre de l'autre côté du maillage
+        Xloc=np.remainder(c.X-var.alphax_z_ref/2, c.Lx)       #Condition limite utilisant le reste d'une division euclidienne
+        Yloc=np.remainder(c.Y-var.alphay_z_ref/2, c.Ly)       # Le point rentre de l'autre côté du maillage
 
         Uloc = fu(Xloc, Yloc, grid = False)
         Vloc = fv(Xloc, Yloc, grid = False)

@@ -4,7 +4,8 @@ Created on Tue Jan  7 16:51:25 2020
 """
 
 import numpy as np
-from scipy import interpolate
+#from scipy import interpolate
+from scipy.interpolate import RectBivariateSpline
 import constantes as c
 import variables as var
 import alphas
@@ -23,13 +24,9 @@ def calcW():
     alphas.calc_alpha_z_ref()
     
     # interpolation des thetas précédents pour estimation de la dérivée totale de l'équation (10)
-    f = interpolate.interp2d(c.y, c.x, theta_z_reftm1, kind='cubic')
-    vf=np.vectorize(f)
+    f = RectBivariateSpline(c.x, c.y, theta_z_reftm1)
     
     # méthode semi-Lagrangienne à l'inverse pour calcul de w
-    X=np.tile(c.x,(c.Ny,1)).transpose()
-    Y=np.tile(c.y, (c.Nx, 1))
-        
-    Xloc=np.remainder(X-var.alphax_z_ref, c.Lx)
-    Yloc=np.remainder(Y-var.alphay_z_ref, c.Ly)
-    var.w = c.g / c.Nt**2 / c.theta_ref * (vf(Yloc, Xloc) - theta_z_ref) / c.dt
+    Xloc=np.remainder(c.X-var.alphax_z_ref, c.Lx)
+    Yloc=np.remainder(c.Y-var.alphay_z_ref, c.Ly)
+    var.w = c.g / c.Nt**2 / c.theta_ref * (f(Xloc, Yloc, grid = False) - theta_z_ref) / c.dt

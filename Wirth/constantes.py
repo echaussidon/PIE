@@ -8,24 +8,24 @@ import numpy as np
 
 # à changer
 init = 2                                        # condition initiale de init_theta
-dt = 1800                                        # pas de temps (s)
+dt = 600                                        # pas de temps (s)
 Tend = 48*60*60                                 # temps final (but: 48h) (s)
 tplot = 3600                                    # fréquence des plots (un plot chaque tplot) (s)
-Nx = 64                                         # nombre de points en x
-Ny = 64                                         # ~ y
+Nx = 256                                        # nombre de points en x
+Ny = 128                                        # ~ y
 x0 = 0.                                         # premier point en x (m)
 x1 = 2048*1000                                  # dernier point en x (m)
 y0 = 0.                                         # ~ y (m)
 y1 = 1024*1000                                  # ~ y (m)
 folder = "folder"                               # dossier pour sauver les figures
-savefig = 1                                     # sauver les figures
-showfig = 1                                     # afficher les figures
-plot_theta = 1                                  # faire le plot de theta ou non
-plot_vitesses = 1                               # ~ vitesses
-plot_WV = 1                                     # ~ image vapeur d'eau
-plot_all = 0                                   # tout sur une figure
+savefig = True                                  # sauver les figures
+showfig = False                                 # afficher les figures
+plot_theta = True                               # faire le plot de theta ou non
+plot_vitesses = True                            # ~ vitesses
+plot_WV = True                                  # ~ image vapeur d'eau
+plot_all = False                                # tout sur une figure
 savefilename = "simulation_ini_0.nc"            # nom du fichier où son sauvegarder les données en netcdf
-print_time_measurement = True                  # affiche le temps d'execution de chaque fonction
+print_time_measurement = False                  # affiche le temps d'execution de chaque fonction
 
 # à ne pas changer
 Nit = int(Tend/dt)                              # nombre d'itérations
@@ -35,15 +35,13 @@ dx = (x1-x0) / (Nx-1)                           # pas en x
 dy = (y1-y0) / (Ny-1)                           # pas en y
 x = np.arange(x0,x1+dx,dx)                      # coordonnées x du maillage : [x0, x0+dx, ... x1]
 y = np.arange(y0,y1+dy,dy)                      # ~ y
+X = np.tile(x,(Ny,1)).transpose()               # construction d'une matrice dont les lignes sont toutes égales au vecteur c.x
+Y = np.tile(y, (Nx, 1))                         # construction d'une matrice dont les colonnes sont toutes égales au vecteur c.y
 Lx = x1 - x0                                    # longueur du domaine en x
 Ly = y1 - y0                                    # ~ y
-Y,X = np.meshgrid(y,x)                          # pour les plots
+Yplot,Xplot = np.meshgrid(y,x)                  # pour les plots
 
 # nombres d'onde
-k = np.zeros((1,Nx))                                        # nombres d'onde en x
-l = np.zeros((1,Ny))                                        # ~ y
-K = np.zeros((Nx,Ny))                                     # magnitude de k et l (sqrt(k^2+l^2))
-
 if np.mod(Nx,2) == 0:                                       # remplir k, ça diffère si N est pair ou impair
     # k = [0, 1, ... N/2 - 1, -N/2, -N/2 + 1, ... -1]
     k = np.concatenate((np.arange(0,Nx/2), np.arange(-Nx/2,0)))*2*np.pi/Lx
@@ -56,9 +54,9 @@ if np.mod(Ny,2) == 0:                                       # ~ y
 else:
     l = np.concatenate((np.arange(0,(Ny-1)/2+1), np.arange(-(Ny-1)/2,0)))*2*np.pi/Ly
 
-for i in range(Nx):
-    for j in range(Ny):
-        K[i][j] = np.sqrt(k[i]**2 + l[j]**2)
+k = np.tile(k,(Ny,1)).transpose()                       #matrice [k,k,...,k]
+l = np.tile(l,(Nx,1))
+K = np.sqrt(k**2+l**2)
 
 # constantes physiques
 g = 9.81
