@@ -1,0 +1,29 @@
+GESTION DE PROJET :
+
+- plan developpement (prendre les graphes, tout ca ect ...) Comparaison diag de Gant (Edmond) prévu avec celui réalisé
+- fonctionnement d'équipe (Augustin)
+- github (Edmond)
+	** Epuration du code 
+	** Documentation fonctionnelle (tout le monde)
+
+-synthese (a la fin)
+
+
+PROJET :
+
+- Résumé (A LA FIN)
+- introduction au sujet (définir des grandeurs comme température potentielle, le phénomène modelisé etc) (Augustin)
+- livrable 1 (FLorian Edmond)
+- livrable 2 (Jan Victor)
+	comment fonctionne la méthode
+	implementation
+	performance (comparaison)
+- livrable 3 (Jan Victor)
+	introduction images WV
+	fonctionnement
+	implementation
+	performance (comparaison)
+- Optimisation (Florain Edmond)
+- conclusion (A LA FIN)
+
+/!!\ FAIRE UNE DOC du PROJET /!!\
